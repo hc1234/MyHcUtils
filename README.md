@@ -9,6 +9,7 @@
 		}
 	}
   
+  导入:
   	dependencies {
 	        compile 'com.github.hc1234:MyHcUtils:1.0'
 	}
