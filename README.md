@@ -6,7 +6,9 @@
 		repositories {
 			...
 			maven { url 'https://jitpack.io' }
-		}
+
+
+1111				}
 	}
   
   导入:
