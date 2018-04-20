@@ -19,7 +19,7 @@ public class FileUtils {
      * @param filepath
      * @return
      */
-    private static Boolean CreteNewFile(Context context, String filepath){
+    public static Boolean CreteNewFile(Context context, String filepath){
 
         if(ISSDCARD(context)){
             File file=new File(filepath);
@@ -42,7 +42,7 @@ public class FileUtils {
      * @param filepath
      * @return
      */
-    private static Boolean CreteNewFileMidr(Context context, String filepath){
+    public static Boolean CreteNewFileMidr(Context context, String filepath){
 
         if(ISSDCARD(context)){
             File file = new File(filepath);
@@ -59,7 +59,7 @@ public class FileUtils {
      * @param fielpath
      * @return
      */
-    private static Boolean Deletefile(Context context, String fielpath){
+    public static Boolean Deletefile(Context context, String fielpath){
         if(ISSDCARD(context)) {
             File file = new File(fielpath);
             if (file.exists()) {
@@ -79,7 +79,7 @@ public class FileUtils {
      * 删除文件夹下所有文件
      * @param file
      */
-    private static void deletefile(File file){
+    public static void deletefile(File file){
         if(file.exists()&&file.isDirectory()){
             for (File file1 : file.listFiles()){
                 if(file1.isFile()){
@@ -98,7 +98,7 @@ public class FileUtils {
      * @param isbackLong false 返回文件大小String 如1M,100K等   true 返回文件size大小 如1024
      * @return
      */
-    private static String GetFileSize(Context context, String filepath, Boolean isbackLong){
+    public static String GetFileSize(Context context, String filepath, Boolean isbackLong){
 
         if(ISSDCARD(context)) {
             File file=new File(filepath);
@@ -133,7 +133,7 @@ public class FileUtils {
      * @return size
      * @throws Exception
      */
-    private static long getFolderSize(File file) throws Exception {
+    public static long getFolderSize(File file) throws Exception {
         long size = 0;
         try {
             File[] fileList = file.listFiles();
@@ -155,7 +155,7 @@ public class FileUtils {
      * @param size size
      * @return size
      */
-    private static String getFormatSize(double size) {
+    public static String getFormatSize(double size) {
 
         double kiloByte = size / 1024;
         if (kiloByte < 1) {
@@ -189,7 +189,7 @@ public class FileUtils {
      * 判断是否存在SD卡和存储权限是否打开
      * @return
      */
-    private static Boolean ISSDCARD(Context context){
+    public static Boolean ISSDCARD(Context context){
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)||!Environment.isExternalStorageRemovable()){
                 if(MyCheckPermissopn.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,context)){
                     return true;
