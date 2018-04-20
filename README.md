@@ -7,5 +7,5 @@ allprojects {
  导入:
 
 dependencies {
-        compile 'com.github.hc1234:MyHcUtils:2.0'
+        compile 'com.github.hc1234:MyHcUtils:4.0'
 }
