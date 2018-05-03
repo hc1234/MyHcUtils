@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <style name="xia_shang" parent="android:Animation">
+        <item name="android:windowEnterAnimation" >@anim/anim_xia_shang_in</item>
+        <item name="android:windowExitAnimation">@anim/anim_xia_shang_out</item>
+    </style>
+    <style name="left_right" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/anim_left_rghit_in</item>
+        <item name="android:windowExitAnimation">@anim/anim_left_right_out</item>
+    </style>
+    <style name="right_left" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/anim_right_left_in</item>
+        <item name="android:windowExitAnimation">@anim/anim_right_left_out</item>
+    </style>
+    <style name="shang_xia" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/anim_shang_xia_in</item>
+        <item name="android:windowExitAnimation">@anim/anim_shang_xia_out</item>
+    </style>
+    <style name="CustomDialog" parent="@android:style/Theme.Holo.Light" >
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+</resources>

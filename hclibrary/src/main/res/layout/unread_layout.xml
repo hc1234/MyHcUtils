@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:clipChildren="false"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/unread_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/unread_yuan"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingTop="1.5dp"
+        android:paddingBottom="1.5dp"
+        android:gravity="center"
+        android:textColor="#fff"
+        android:text="2"
+        android:textSize="8sp" />
+</LinearLayout>

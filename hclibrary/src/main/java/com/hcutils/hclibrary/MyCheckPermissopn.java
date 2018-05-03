@@ -1,5 +1,6 @@
 package com.hcutils.hclibrary;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -7,6 +8,23 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 
 public class MyCheckPermissopn {
+    public static int REQUSTCODE=1001;
+
+
+    /**
+     * 判断并申请权限
+     * @param permission
+     * @param activity
+     */
+    public static Boolean ApplyPermission(String permission,Activity activity){
+
+        if(!checkPermission(permission,activity)){
+            ActivityCompat.requestPermissions(activity, new String[]{permission}, REQUSTCODE);
+            return false;
+        }else{
+            return true;
+        }
+    }
 
     /**
      * 判断是否有权限
