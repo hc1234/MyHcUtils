@@ -39,8 +39,6 @@ public class Unreadview extends RelativeLayout{
         super(context, attrs, defStyleAttr);
         view = LayoutInflater.from(context).inflate(R.layout.unread_layout,null);
         unread= (TextView) view.findViewById(R.id.unread_number);
-
-
     }
 
 

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -203,6 +204,30 @@ public class FileUtils {
         return false;
     }
 
+    /**
+     * 指定文件写入数据
+     * @param fileName
+     * @param message
+     */
+    public static void writeFileSdcard(String fileName, String message) {
 
+        try {
+            // FileOutputStream fout = openFileOutput(fileName, MODE_PRIVATE);
+
+            FileOutputStream fout = new FileOutputStream(fileName);
+
+            byte[] bytes = message.getBytes();
+
+            fout.write(bytes);
+
+            fout.close();
+        }
+        catch (Exception e) {
+
+            e.printStackTrace();
+
+        }
+
+    }
 
 }
