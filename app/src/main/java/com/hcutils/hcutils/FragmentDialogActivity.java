@@ -2,17 +2,18 @@ package com.hcutils.hcutils;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.hcutils.hclibrary.FragmentDialog.HCSetFragmentDialog;
 
-public class FragmentDialogActivity extends AppCompatActivity{
+public class FragmentDialogActivity extends AppCompatActivity {
     TextView showpop;
 
     @Override
@@ -38,7 +39,6 @@ public class FragmentDialogActivity extends AppCompatActivity{
                 .getview(new HCSetFragmentDialog.Getview() {
                     @Override
                     public void getview(View view) {
-
                     }
                 })
                 .show();
