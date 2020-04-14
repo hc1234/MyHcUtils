@@ -12,7 +12,6 @@
 
         <activity android:name=".UnreadActivty"
             >
-
         </activity>
 
         <activity android:name=".FragmentDialogActivity">
