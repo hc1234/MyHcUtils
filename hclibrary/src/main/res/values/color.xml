@@ -2,4 +2,5 @@
 <resources>
 
     <color name="write">#fff</color>
+    <color name="black">#000000</color>
 </resources>

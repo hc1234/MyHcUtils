@@ -12,5 +12,47 @@
     android:text="弹出pop"
     android:padding="20dp"
     />
-
+    
+    <TextView
+        android:id="@+id/call"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="拨打电话"
+        android:padding="15dp"
+        ></TextView>
+    <TextView
+        android:id="@+id/call_voice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="拨打语音电话"
+        android:padding="15dp"
+        ></TextView>
+    <TextView
+        android:id="@+id/answer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="接听电话"
+        android:padding="15dp"
+        ></TextView>
+    <TextView
+        android:id="@+id/call_ksdh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="设备拨打电话"
+        android:padding="15dp"
+        ></TextView>
+    <TextView
+        android:id="@+id/call_voice_ksdh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="设备拨打语音电话"
+        android:padding="15dp"
+        ></TextView>
+    <TextView
+        android:id="@+id/answer_ksdh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="设备接听电话"
+        android:padding="15dp"
+        ></TextView>
 </LinearLayout>

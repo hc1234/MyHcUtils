@@ -205,7 +205,7 @@ public class FileUtils {
     }
 
     /**
-     * 指定文件写入数据
+     * 指定文件写入数据 (追加写入)
      * @param fileName
      * @param message
      */
@@ -214,7 +214,7 @@ public class FileUtils {
         try {
             // FileOutputStream fout = openFileOutput(fileName, MODE_PRIVATE);
 
-            FileOutputStream fout = new FileOutputStream(fileName);
+            FileOutputStream fout = new FileOutputStream(fileName,true);
 
             byte[] bytes = message.getBytes();
 
@@ -229,5 +229,6 @@ public class FileUtils {
         }
 
     }
+
 
 }

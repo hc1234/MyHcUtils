@@ -1,7 +1,8 @@
 package com.hcutils.hclibrary.FragmentDialog;
 
-import android.support.v4.app.FragmentManager;
 import android.view.View;
+
+import androidx.fragment.app.FragmentManager;
 
 public class HCSetFragmentDialog extends HC_FragmentDilog {
      FragmentManager fragmentManager;
