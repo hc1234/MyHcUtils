@@ -29,8 +29,6 @@ import java.util.List;
 
 
 public class BaseChatActivity extends HcUtisBaseActivty {
-
-
     public interface NetWorkResult{
         void result(int code, String data);
     }
