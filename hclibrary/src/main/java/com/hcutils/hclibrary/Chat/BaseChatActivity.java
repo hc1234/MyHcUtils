@@ -40,6 +40,7 @@ public class BaseChatActivity extends HcUtisBaseActivty {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i("hcc","base");
+
         initRTCEngineAndStartPreview();
         SounPoilUtill.Getinstanc(BaseChatActivity.this);
     }
