@@ -19,7 +19,6 @@
     <!--android 9.0上使用前台服务，需要添加权限-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <application
-        android:name=".MyApppliction"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -40,29 +39,29 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Chat.VoiceKSDHActiivty"
+        <activity android:name="com.hcutils.hclibrary.Chat.VoiceKSDHActiivty"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.Fullscreen"
             ></activity>
-        <activity android:name=".Chat.VoiceActivity"
+        <activity android:name="com.hcutils.hclibrary.Chat.VoiceActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.Fullscreen"
             ></activity>
-        <activity android:name=".Chat.VideoKSDHActivity"
+        <activity android:name="com.hcutils.hclibrary.Chat.VideoKSDHActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.Fullscreen"
             ></activity>
         <activity android:name=".TestActivity"></activity>
-        <activity android:name=".Chat.VideoActivity"
+        <activity android:name="com.hcutils.hclibrary.Chat.VideoActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.Fullscreen"
             ></activity>
-        <activity android:name=".Chat.BaseChatVideoActivity"></activity>
-        <activity android:name=".Chat.BaseChatActivity"
+        <activity android:name="com.hcutils.hclibrary.Chat.BaseChatVideoActivity"></activity>
+        <activity android:name="com.hcutils.hclibrary.Chat.BaseChatActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.Fullscreen"
             ></activity>
-        <activity android:name=".Chat.HcUtisBaseActivty"></activity>
+        <activity android:name="com.hcutils.hclibrary.Chat.HcUtisBaseActivty"></activity>
 
 <!--        <provider-->
 <!--            android:name="android.support.v4.content.FileProvider"-->

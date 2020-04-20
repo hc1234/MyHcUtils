@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@color/black"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/voice_touser_line"
+        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="语音通话"
+            android:textColor="@color/write"
+            android:textSize="15sp"
+            android:layout_marginBottom="5dp"
+            />
+        <ImageView
+            android:id="@+id/voice_touser_personimage"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@mipmap/head_portrait"
+            android:scaleType="centerCrop"
+            />
+        <TextView
+            android:id="@+id/voice_touser_name"
+            android:layout_marginTop="8dp"
+            android:textSize="18sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="黄超"
+            android:textColor="@color/write"
+            android:textStyle="bold"
+            />
+        <TextView
+            android:id="@+id/voice_touser_type"
+            android:layout_marginTop="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="连接对方中..."
+            android:textSize="13sp"
+            android:textColor="@color/write"
+            />
+
+        <TextView
+            android:id="@+id/voice_time"
+            android:padding="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="@color/write"
+            android:textStyle="bold"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        >
+        <CheckBox
+            android:layout_gravity="right"
+            android:id="@+id/voice_checkvoice"
+            android:drawablePadding="5dp"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/voice_choice"
+            android:text="扬声器"
+            android:checked="true"
+            android:button="@null"
+            android:padding="15dp"
+            android:textColor="#dcebff"
+            />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+
+        >
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/voicejieshou"
+            android:padding="15dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="#fff"
+            android:textSize="20sp"
+            android:background="#2dcd0d"
+            android:text="接受"
+            android:gravity="center"
+            />
+        <TextView
+
+            android:id="@+id/voice_cancel"
+            android:padding="15dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="#fff"
+            android:textSize="20sp"
+            android:background="#cd110d"
+            android:text="挂断"
+            android:gravity="center"
+            />
+    </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

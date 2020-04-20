@@ -14,12 +14,12 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.hcutils.hclibrary.Chat.CallInfor;
+import com.hcutils.hclibrary.Chat.VideoActivity;
+import com.hcutils.hclibrary.Chat.VideoKSDHActivity;
+import com.hcutils.hclibrary.Chat.VoiceActivity;
+import com.hcutils.hclibrary.Chat.VoiceKSDHActiivty;
 import com.hcutils.hclibrary.FragmentDialog.HCSetFragmentDialog;
-import com.hcutils.hcutils.Chat.CallInfor;
-import com.hcutils.hcutils.Chat.VideoActivity;
-import com.hcutils.hcutils.Chat.VideoKSDHActivity;
-import com.hcutils.hcutils.Chat.VoiceActivity;
-import com.hcutils.hcutils.Chat.VoiceKSDHActiivty;
 
 public class FragmentDialogActivity extends AppCompatActivity {
     TextView showpop;
