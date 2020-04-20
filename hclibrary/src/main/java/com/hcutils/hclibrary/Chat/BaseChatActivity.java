@@ -53,7 +53,7 @@ public class BaseChatActivity extends HcUtisBaseActivty {
         // 防止初始化过多
         if (mAliRtcEngine == null) {
             //实例化,必须在主线程进行。
-            mAliRtcEngine = AliRtcEngine.getInstance(getApplicationContext());
+            mAliRtcEngine = AliRtcEngine.getInstance(BaseChatActivity.this);
             mAliRtcEngine.startAudioPlayer();
             mAliRtcEngine.startAudioCapture();
         }
