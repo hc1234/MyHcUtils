@@ -18,6 +18,10 @@ android {
                 dirs 'libs'
             }
         }
+
+        packagingOptions {
+            pickFirst 'lib/armeabi-v7a/libwukong_ua.so'
+        }
     }
     buildTypes {
         release {
