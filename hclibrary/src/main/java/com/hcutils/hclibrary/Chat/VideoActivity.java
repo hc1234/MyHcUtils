@@ -23,8 +23,8 @@ import com.hcutils.hclibrary.Datautils.DataUtis;
 import com.hcutils.hclibrary.Datautils.PermissionUtils;
 import com.hcutils.hclibrary.R;
 import com.hcutils.hclibrary.R2;
+import com.hcutils.hclibrary.Utils.ThreadUtils;
 
-import org.webrtc.ali.ThreadUtils;
 import org.webrtc.alirtcInterface.AliParticipantInfo;
 import org.webrtc.alirtcInterface.AliStatusInfo;
 import org.webrtc.alirtcInterface.AliSubscriberInfo;
@@ -290,7 +290,7 @@ public class VideoActivity extends BaseChatVideoActivity {
     public void setConnect() {
         initLocalView(oppositeSurface);
         startPreview();
-        ThreadUtils.postOnUiThread(new Runnable() {
+        ThreadUtils.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 joinChannel(rtcInfor,true);
@@ -315,7 +315,7 @@ public class VideoActivity extends BaseChatVideoActivity {
             callJieLine.setVisibility(View.GONE);
             callGuanduan.setVisibility(View.VISIBLE);
             showinforLine.setVisibility(View.GONE);
-            ThreadUtils.postOnUiThread(new Runnable() {
+            ThreadUtils.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     big_local=false;

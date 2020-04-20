@@ -18,8 +18,8 @@ import com.hcutils.hclibrary.Datautils.DataUtis;
 import com.hcutils.hclibrary.Datautils.PermissionUtils;
 import com.hcutils.hclibrary.R;
 import com.hcutils.hclibrary.R2;
+import com.hcutils.hclibrary.Utils.ThreadUtils;
 
-import org.webrtc.ali.ThreadUtils;
 import org.webrtc.alirtcInterface.AliParticipantInfo;
 import org.webrtc.alirtcInterface.AliStatusInfo;
 import org.webrtc.alirtcInterface.AliSubscriberInfo;
@@ -208,7 +208,7 @@ public class VoiceActivity extends BaseChatActivity {
      * 加入频道 自动发布订阅
      */
     public void setConnect() {
-        ThreadUtils.postOnUiThread(new Runnable() {
+        ThreadUtils.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 joinChannel(rtcInfor,true);
