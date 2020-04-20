@@ -73,7 +73,7 @@
 <!--                android:resource="@xml/file_paths" />-->
 <!--        </provider>-->
         <service
-            android:name=".Chat.ForegroundService"
+            android:name="com.hcutils.hclibrary.Chat.ForegroundService"
             android:enabled="true" />
     </application>
 
