@@ -42,7 +42,7 @@ public class SounPoilUtill {
         }else if(i==2){
            playoutid= soundPool.play(outid,1, 1, 1, -1, 1);
         }else if(i==3){
-            playnocall=soundPool.play(nocallid,1,1,1,1,1);
+            playnocall=soundPool.play(nocallid,1,1,1,0,1);
         }
 
     }

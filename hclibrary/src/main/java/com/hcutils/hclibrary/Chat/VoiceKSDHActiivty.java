@@ -63,7 +63,7 @@ public class VoiceKSDHActiivty extends BaseChatActivity{
         ButterKnife.bind(this);
         call_type = getIntent().getStringExtra("type");
         callInfor = getIntent().getParcelableExtra("infor");
-        setTypeUi(call_type);
+        setTypeUi("");
         registHOOK();
         voiceCheckvoice.setVisibility(View.GONE);
         voiceTouserType.setText("正在获取信息中");
@@ -129,8 +129,10 @@ public class VoiceKSDHActiivty extends BaseChatActivity{
                         if (code == 0) {
                             rtcInfor = DataUtis.parseToJson(data);
                             rtcInfor.setUsername(username);
+                            setTypeUi(call_type);
                             startToCall();
                         } else {
+                            setTypeUi(call_type);
                             ToastUtis("信息获取失败");
                             finish();
                         }
@@ -219,7 +221,7 @@ public class VoiceKSDHActiivty extends BaseChatActivity{
             public void run() {
                 joinChannel(rtcInfor,true);
             }
-        }, 200);
+        }, 100);
     }
 
     /**
@@ -241,6 +243,9 @@ public class VoiceKSDHActiivty extends BaseChatActivity{
             voicejieshou.setVisibility(View.GONE);
             voiceCancel.setVisibility(View.VISIBLE);
             stopCount();
+        }else{
+            voicejieshou.setVisibility(View.GONE);
+            voiceCancel.setVisibility(View.GONE);
         }
     }
 

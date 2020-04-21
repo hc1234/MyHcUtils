@@ -59,7 +59,7 @@ public class VoiceActivity extends BaseChatActivity {
         ButterKnife.bind(this);
         call_type = getIntent().getStringExtra("type");
         callInfor = getIntent().getParcelableExtra("infor");
-        setTypeUi(call_type);
+        setTypeUi("");
         voiceTouserType.setText("正在获取信息中");
         voiceTouserName.setText("");
         chcekPermisson();
@@ -121,6 +121,7 @@ public class VoiceActivity extends BaseChatActivity {
                 public void result(int code, String data) {
                     if (VoiceActivity.this != null && !VoiceActivity.this.isFinishing()) {
                         if (code == 0) {
+                            setTypeUi(call_type);
                             rtcInfor = DataUtis.parseToJson(data);
                             rtcInfor.setUsername(username);
                             startToCall();
@@ -143,6 +144,7 @@ public class VoiceActivity extends BaseChatActivity {
                 public void result(int code, String data) {
                     if (VoiceActivity.this != null && !VoiceActivity.this.isFinishing()) {
                         if (code == 0) {
+                            setTypeUi(call_type);
                             rtcInfor = DataUtis.parseToJson(data);
                             if (isOnline(rtcInfor.getFrom())) {
                                 rtcInfor.setUsername(username);
@@ -213,7 +215,7 @@ public class VoiceActivity extends BaseChatActivity {
             public void run() {
                 joinChannel(rtcInfor,true);
             }
-        }, 200);
+        }, 100);
     }
 
     /**
@@ -235,6 +237,9 @@ public class VoiceActivity extends BaseChatActivity {
             voiceTouserType.setText("正在通话中");
             voicejieshou.setVisibility(View.GONE);
             voiceCancel.setVisibility(View.VISIBLE);
+        }else{
+            voicejieshou.setVisibility(View.GONE);
+            voiceCancel.setVisibility(View.GONE);
         }
     }
 

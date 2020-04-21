@@ -84,7 +84,7 @@ public class VideoActivity extends BaseChatVideoActivity {
         ButterKnife.bind(this);
         call_type = getIntent().getStringExtra("type");
         callInfor = getIntent().getParcelableExtra("infor");
-        setTypeUi(call_type);
+        setTypeUi("");
         showinforNumber.setText("正在获取信息中");
         showinforName.setText("");
         chcekPermisson();
@@ -183,6 +183,7 @@ public class VideoActivity extends BaseChatVideoActivity {
                 public void result(int code, String data) {
                     if (VideoActivity.this != null && !VideoActivity.this.isFinishing()) {
                         if (code == 0) {
+                            setTypeUi(call_type);
                             rtcInfor = DataUtis.parseToJson(data);
                             rtcInfor.setUsername(username);
                             startToCall();
@@ -206,6 +207,7 @@ public class VideoActivity extends BaseChatVideoActivity {
                 public void result(int code, String data) {
                     if (VideoActivity.this != null && !VideoActivity.this.isFinishing()) {
                         if (code == 0) {
+                            setTypeUi(call_type);
                             rtcInfor = DataUtis.parseToJson(data);
                             if (isOnline(rtcInfor.getFrom())) {
                                 rtcInfor.setUsername(username);
@@ -295,7 +297,7 @@ public class VideoActivity extends BaseChatVideoActivity {
             public void run() {
                 joinChannel(rtcInfor,true);
             }
-        }, 200);
+        }, 100);
     }
 
     /**
@@ -324,6 +326,10 @@ public class VideoActivity extends BaseChatVideoActivity {
                 }
             },500);
 
+        }else{
+            callJieLine.setVisibility(View.GONE);
+            callGuanduan.setVisibility(View.GONE);
+            showinforLine.setVisibility(View.GONE);
         }
     }
 

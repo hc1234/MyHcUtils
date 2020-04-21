@@ -421,8 +421,14 @@ public class BaseChatActivity extends HcUtisBaseActivty {
                             @Override
                             public void run() {
                                 SounPoilUtill.Getinstanc(context).playrool(3);
-                                ToastUtis("对方无人接听,请稍后再拨");
-                                finish();
+                                ThreadUtils.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ToastUtis("对方无人接听,请稍后再拨");
+                                        finish();
+                                    }
+                                },1000);
+
                             }
                         });
                     }

@@ -76,7 +76,7 @@ public class VideoKSDHActivity extends BaseChatVideoActivity {
 
         call_type = getIntent().getStringExtra("type");
         callInfor = getIntent().getParcelableExtra("infor");
-        setTypeUi(call_type);
+        setTypeUi("");
         registHOOK();
         videoTouserType.setText("正在获取信息中");
         videoTouserName.setText("");
@@ -126,7 +126,6 @@ public class VideoKSDHActivity extends BaseChatVideoActivity {
     }
 
     private void swiSurface() {
-        Log.i("hcc", "chartUserListView==" + big_local);
         contentFrame2.removeAllViews();
         contentFrame1.removeAllViews();
         if (big_local) {
@@ -178,6 +177,7 @@ public class VideoKSDHActivity extends BaseChatVideoActivity {
                         if (code == 0) {
                             rtcInfor = DataUtis.parseToJson(data);
                             rtcInfor.setUsername(username);
+                            setTypeUi(call_type);
                             startToCall();
                         } else {
                             ToastUtis("信息获取失败");
@@ -198,6 +198,7 @@ public class VideoKSDHActivity extends BaseChatVideoActivity {
                 public void result(int code, String data) {
                     if (VideoKSDHActivity.this != null && !VideoKSDHActivity.this.isFinishing()) {
                         if (code == 0) {
+                            setTypeUi(call_type);
                             rtcInfor = DataUtis.parseToJson(data);
                             if (isOnline(rtcInfor.getFrom())) {
                                 rtcInfor.setUsername(username);
@@ -283,7 +284,7 @@ public class VideoKSDHActivity extends BaseChatVideoActivity {
             public void run() {
                 joinChannel(rtcInfor,true);
             }
-        }, 200);
+        }, 100);
     }
 
     /**
@@ -312,6 +313,9 @@ public class VideoKSDHActivity extends BaseChatVideoActivity {
                 }
             }, 500);
 
+        }else{
+            videoJieshou.setVisibility(View.GONE);
+            videoCancel.setVisibility(View.GONE);
         }
     }
 
