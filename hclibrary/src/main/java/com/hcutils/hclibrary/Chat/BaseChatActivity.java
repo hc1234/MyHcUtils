@@ -256,7 +256,7 @@ public class BaseChatActivity extends HcUtisBaseActivty {
                     if(callInfor.getPush_type().equals("D2P")){
                         pushTuisongD2P(callInfor.getTo(),callInfor.getDevice(),rtcInfor.getChannel(),callInfor.getType());
                     }else if(callInfor.getPush_type().equals("P2D")){
-                        pushTuisongP2D(callInfor.getRelkey(),callInfor.getDevice(),rtcInfor.getChannel(),callInfor.getType());
+                        pushTuisongP2D(callInfor.getRelkey(),callInfor.getTo(),rtcInfor.getChannel(),callInfor.getType());
                     }else if(callInfor.getPush_type().equals("P2P")){
                         pushTuisongP2P(callInfor.getRelkey(),callInfor.getTo(),rtcInfor.getChannel(),callInfor.getType());
 
