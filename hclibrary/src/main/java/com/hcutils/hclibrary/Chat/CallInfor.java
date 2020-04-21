@@ -5,15 +5,16 @@ import android.os.Parcelable;
 
 public class CallInfor implements Parcelable {
 
-    String device;
-    String from;
-    String from_name;
-    String to;
-    String to_name;
-    String type;
+    String device;   //设备key
+    String from;  //拨打人key
+    String from_name; //拨打人名字
+    String to;  //接收人key
+    String to_name; //接收人姓名
+    String type;  // 通话类型  0是语音 1是视频
     String memo;
-    String channel;
+    String channel; //频道
     String relkey;
+    String push_type;//推送类型  P2P人推送给人 P2D人推送给设备 D2P设备推送给人
 
     public CallInfor(){
 
@@ -29,6 +30,7 @@ public class CallInfor implements Parcelable {
         memo = in.readString();
         channel = in.readString();
         relkey = in.readString();
+        push_type = in.readString();
     }
 
     public static final Creator<CallInfor> CREATOR = new Creator<CallInfor>() {
@@ -115,6 +117,14 @@ public class CallInfor implements Parcelable {
         this.relkey = relkey;
     }
 
+    public String getPush_type() {
+        return push_type;
+    }
+
+    public void setPush_type(String push_type) {
+        this.push_type = push_type;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -131,5 +141,6 @@ public class CallInfor implements Parcelable {
         dest.writeString(memo);
         dest.writeString(channel);
         dest.writeString(relkey);
+        dest.writeString(push_type);
     }
 }

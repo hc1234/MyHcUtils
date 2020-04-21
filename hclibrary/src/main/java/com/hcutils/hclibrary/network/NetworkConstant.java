@@ -20,8 +20,11 @@ public class NetworkConstant {
     public static final String [] Videophone_a9={"device","from","to","type","relkey"};// 拨打电话  type 0语音 1视频
     public static final String [] Videophone_a10={"channel"};// 接听电话
 
-    public static final String Bridge="Bridge";
-    public static final String [] Bridge_arr_a0={"contactor","device","type"};  //厂家通道测试  contactor接听人key  device 设备key
+
+    public static final String Bridge="Bridge"; //推送
+    public static final String [] Bridge_arr_a1={"device","relkey","channel","type"};  //人推送给设备  type 0是语音 1是视频
+    public static final String [] Bridge_arr_a2={"user","relkey","channel","type"};  //人推送给人  type 0是语音 1是视频
+    public static final String [] Bridge_arr_a3={"user","device","channel","type"};  //设备推送给人  user device 设备key  type
 
     //上传文件
     public static final String File="File";

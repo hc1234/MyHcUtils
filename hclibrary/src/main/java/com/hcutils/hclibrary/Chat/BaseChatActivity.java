@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 
 import com.alivc.rtc.AliRtcAuthInfo;
 import com.alivc.rtc.AliRtcEngine;
+import com.hcutils.hclibrary.Datautils.DataUtis;
 import com.hcutils.hclibrary.Datautils.SounPoilUtill;
 import com.hcutils.hclibrary.Utils.ThreadUtils;
 import com.hcutils.hclibrary.network.NetWorkBobyInfor;
@@ -248,15 +249,21 @@ public class BaseChatActivity extends HcUtisBaseActivty {
          netWorkBobyInfor.setCallBack(new NetWorkBobyInfor.CallBack() {
              @Override
              public void setresult(int code, String data) {
-                 netWorkResult.result(code,data);
+
                  if(code==0){
-                     String call_type="";
-                     if(callInfor.getType().equals("1")){
-                         call_type="videocall";
-                     }else{
-                         call_type="voicecall";
-                     }
-                     pushTuisong(callInfor.getTo(),callInfor.getDevice(),callInfor.getType());
+                     netWorkResult.result(code,data);
+                    RTCInfor rtcInfor = DataUtis.parseToJson(data);
+                    if(callInfor.getPush_type().equals("D2P")){
+                        pushTuisongD2P(callInfor.getTo(),callInfor.getDevice(),rtcInfor.getChannel(),callInfor.getType());
+                    }else if(callInfor.getPush_type().equals("P2D")){
+                        pushTuisongP2D(callInfor.getRelkey(),callInfor.getDevice(),rtcInfor.getChannel(),callInfor.getType());
+                    }else if(callInfor.getPush_type().equals("P2P")){
+                        pushTuisongP2P(callInfor.getRelkey(),callInfor.getTo(),rtcInfor.getChannel(),callInfor.getType());
+
+                    }
+                 }else{
+                     ToastUtis("信息获取失败");
+                     finish();
                  }
              }
          });
@@ -268,7 +275,6 @@ public class BaseChatActivity extends HcUtisBaseActivty {
      * @param netWorkResult
      */
     public void getAnswerInfor(NetWorkResult netWorkResult,String channel){
-
         NetWorkBobyInfor netWorkBobyInfor = new NetWorkBobyInfor();
         netWorkBobyInfor.setAction(10);
         netWorkBobyInfor.setIpaddress(NetworkConstant.Videophone);
@@ -278,24 +284,78 @@ public class BaseChatActivity extends HcUtisBaseActivty {
         netWorkBobyInfor.setCallBack(new NetWorkBobyInfor.CallBack() {
             @Override
             public void setresult(int code, String data) {
-                netWorkResult.result(code,data);
+                if(code==0){
+                    netWorkResult.result(code,data);
+                }else{
+                    ToastUtis("信息获取失败");
+                    finish();
+                }
+
             }
         });
         NetworkUtil.func_post(netWorkBobyInfor,BaseChatActivity.this);
     }
 
     /**
-     *  发送推送
-     * @param ContactorKey
+     * 发送推送 设备推送给人
+     * @param user
      * @param divicenumber
+     * @param cannne
      * @param callType
      */
-    public void pushTuisong(String ContactorKey,String divicenumber,String callType){
+    public void pushTuisongD2P(String user,String divicenumber,String cannne,String callType){
         NetWorkBobyInfor netWorkBobyInfor = new NetWorkBobyInfor();
-        netWorkBobyInfor.setAction(0);
+        netWorkBobyInfor.setAction(3);
         netWorkBobyInfor.setIpaddress(NetworkConstant.Bridge);
-        netWorkBobyInfor.setParameters(NetworkConstant.Bridge_arr_a0);
-        netWorkBobyInfor.setParameters_value(new Object[]{ContactorKey, divicenumber, callType});
+        netWorkBobyInfor.setParameters(NetworkConstant.Bridge_arr_a3);
+        netWorkBobyInfor.setParameters_value(new Object[]{user, divicenumber, cannne,callType});
+        netWorkBobyInfor.setCallBack(new NetWorkBobyInfor.CallBack() {
+            @Override
+            public void setresult(int code, String data) {
+
+
+            }
+        });
+        NetworkUtil.func_post(netWorkBobyInfor,BaseChatActivity.this);
+    }
+
+
+    /**
+     *  发送推送 人推送给设备
+     * @param relkey
+     * @param divicenumber
+     * @param cannel
+     * @param callType
+     */
+    public void pushTuisongP2D(String relkey,String divicenumber,String cannel,String callType){
+        NetWorkBobyInfor netWorkBobyInfor = new NetWorkBobyInfor();
+        netWorkBobyInfor.setAction(1);
+        netWorkBobyInfor.setIpaddress(NetworkConstant.Bridge);
+        netWorkBobyInfor.setParameters(NetworkConstant.Bridge_arr_a1);
+        netWorkBobyInfor.setParameters_value(new Object[]{divicenumber,relkey,cannel, callType});
+        netWorkBobyInfor.setCallBack(new NetWorkBobyInfor.CallBack() {
+            @Override
+            public void setresult(int code, String data) {
+
+
+            }
+        });
+        NetworkUtil.func_post(netWorkBobyInfor,BaseChatActivity.this);
+    }
+
+    /**
+     * 人推送给人
+     * @param relkey
+     * @param user
+     * @param cannel
+     * @param callType
+     */
+    public void pushTuisongP2P(String relkey,String user,String cannel,String callType){
+        NetWorkBobyInfor netWorkBobyInfor = new NetWorkBobyInfor();
+        netWorkBobyInfor.setAction(2);
+        netWorkBobyInfor.setIpaddress(NetworkConstant.Bridge);
+        netWorkBobyInfor.setParameters(NetworkConstant.Bridge_arr_a2);
+        netWorkBobyInfor.setParameters_value(new Object[]{user,relkey,cannel, callType});
         netWorkBobyInfor.setCallBack(new NetWorkBobyInfor.CallBack() {
             @Override
             public void setresult(int code, String data) {
