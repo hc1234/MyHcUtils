@@ -315,6 +315,7 @@ public class VideoActivity extends BaseChatVideoActivity {
             callJieLine.setVisibility(View.GONE);
             callGuanduan.setVisibility(View.VISIBLE);
             showinforLine.setVisibility(View.GONE);
+            stopCount();
             ThreadUtils.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

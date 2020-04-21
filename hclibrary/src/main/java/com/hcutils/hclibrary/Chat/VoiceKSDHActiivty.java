@@ -240,6 +240,7 @@ public class VoiceKSDHActiivty extends BaseChatActivity{
             voiceTouserType.setText("正在通话中");
             voicejieshou.setVisibility(View.GONE);
             voiceCancel.setVisibility(View.VISIBLE);
+            stopCount();
         }
     }
 
@@ -586,5 +587,13 @@ public class VoiceKSDHActiivty extends BaseChatActivity{
 
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        if(HOOKReceview!=null){
+            unregisterReceiver(HOOKReceview);
+        }
+        super.onDestroy();
+    }
 
 }

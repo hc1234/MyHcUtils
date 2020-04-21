@@ -15,8 +15,8 @@ import com.hcutils.hclibrary.R;
 public class SounPoilUtill {
     static SounPoilUtill sounPoilUtill;
     static SoundPool soundPool;
-    static int comeid,outid;
-    static int playcomeid,playoutid;
+    static int comeid,outid,nocallid;
+    static int playcomeid,playoutid,playnocall;
 
 
     public static SounPoilUtill Getinstanc(Context context){
@@ -31,6 +31,7 @@ public class SounPoilUtill {
         soundPool=new SoundPool(10, AudioManager.STREAM_SYSTEM,0);
         comeid=soundPool.load(context, R.raw.comecome3,1);
         outid=soundPool.load(context,R.raw.em_outgoing,1);
+        nocallid=soundPool.load(context,R.raw.nocall,1);
 
 
     }
@@ -40,6 +41,8 @@ public class SounPoilUtill {
            playcomeid= soundPool.play(comeid,1, 1, 1, -1, 1);
         }else if(i==2){
            playoutid= soundPool.play(outid,1, 1, 1, -1, 1);
+        }else if(i==3){
+            playnocall=soundPool.play(nocallid,1,1,1,1,1);
         }
 
     }
@@ -52,6 +55,7 @@ public class SounPoilUtill {
         if(playoutid>0){
             soundPool.stop(playoutid);
         }
+
 
     }
 }

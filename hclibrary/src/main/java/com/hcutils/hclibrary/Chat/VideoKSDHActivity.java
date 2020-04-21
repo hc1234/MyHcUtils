@@ -303,6 +303,7 @@ public class VideoKSDHActivity extends BaseChatVideoActivity {
             videoTouserLine.setVisibility(View.GONE);
             videoJieshou.setVisibility(View.GONE);
             videoCancel.setVisibility(View.VISIBLE);
+            stopCount();
             ThreadUtils.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -640,6 +641,14 @@ public class VideoKSDHActivity extends BaseChatVideoActivity {
         IntentFilter intentFilter=new IntentFilter();
         intentFilter.addAction("zicoo.tele.HOOK_CTRL");
         registerReceiver(HOOKReceview,intentFilter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(HOOKReceview!=null){
+            unregisterReceiver(HOOKReceview);
+        }
+        super.onDestroy();
     }
 
     BroadcastReceiver HOOKReceview =new BroadcastReceiver() {

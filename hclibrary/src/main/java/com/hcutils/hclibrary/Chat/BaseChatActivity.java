@@ -163,6 +163,7 @@ public class BaseChatActivity extends HcUtisBaseActivty {
     @Override
     protected void onDestroy() {
         stopMusic();
+        stopCount();
         stopThreadTime();
         //离会
         if (mAliRtcEngine != null) {
@@ -202,11 +203,12 @@ public class BaseChatActivity extends HcUtisBaseActivty {
         }
     }
     public Boolean isOnline(String uid){
-        if(mAliRtcEngine!=null) {
-            return mAliRtcEngine.isUserOnline(uid);
-        }else{
-            return false;
-        }
+//        if(mAliRtcEngine!=null) {
+//            return mAliRtcEngine.isUserOnline(uid);
+//        }else{
+//            return false;
+//        }
+        return true;
     }
 
     /**
@@ -251,6 +253,7 @@ public class BaseChatActivity extends HcUtisBaseActivty {
              public void setresult(int code, String data) {
 
                  if(code==0){
+                     startCount(BaseChatActivity.this);
                      netWorkResult.result(code,data);
                     RTCInfor rtcInfor = DataUtis.parseToJson(data);
                     if(callInfor.getPush_type().equals("D2P")){
@@ -259,7 +262,6 @@ public class BaseChatActivity extends HcUtisBaseActivty {
                         pushTuisongP2D(callInfor.getRelkey(),callInfor.getTo(),rtcInfor.getChannel(),callInfor.getType());
                     }else if(callInfor.getPush_type().equals("P2P")){
                         pushTuisongP2P(callInfor.getRelkey(),callInfor.getTo(),rtcInfor.getChannel(),callInfor.getType());
-
                     }
                  }else{
                      ToastUtis("信息获取失败");
@@ -393,6 +395,41 @@ public class BaseChatActivity extends HcUtisBaseActivty {
 
             }
         });
+    }
+
+    Boolean DownCount=true;
+    int count=0;
+    public void stopCount(){
+        DownCount=false;
+    }
+    public void  startCount(Context context){
+        count=0;
+        DownCount=true;
+        ThreadUtils.runOnSubThread(new Runnable() {
+            @Override
+            public void run() {
+                while (DownCount){
+                    count++;
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if(count>=60){
+                        DownCount=false;
+                        ThreadUtils.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                SounPoilUtill.Getinstanc(context).playrool(3);
+                                ToastUtis("对方无人接听,请稍后再拨");
+                                finish();
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
     }
 
     private String parseTime(){

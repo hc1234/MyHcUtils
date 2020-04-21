@@ -230,6 +230,7 @@ public class VoiceActivity extends BaseChatActivity {
             voicejieshou.setVisibility(View.GONE);
             voiceCancel.setVisibility(View.VISIBLE);
         } else if (typeUi.equals("conect")) {
+            stopCount();
             voiceTouserLine.setVisibility(View.VISIBLE);
             voiceTouserType.setText("正在通话中");
             voicejieshou.setVisibility(View.GONE);
