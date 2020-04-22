@@ -56,11 +56,13 @@ public class VoiceKSDHActiivty extends BaseChatActivity{
     CallInfor callInfor; //拨打的时候传入 拨打信息
     String username;
     RTCInfor rtcInfor = new RTCInfor();
+    Boolean isonline=false;  //对方是否在线
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_voice);
         ButterKnife.bind(this);
+        isonline=false;
         call_type = getIntent().getStringExtra("type");
         callInfor = getIntent().getParcelableExtra("infor");
         setTypeUi("");
@@ -72,7 +74,7 @@ public class VoiceKSDHActiivty extends BaseChatActivity{
         if (!GetSpeakerphone()) {
             setSpeakerphone();
         }
-
+        setLoadimage(callInfor.getMemo(),voiceTouserPersonimage);
     }
 
     /**
@@ -181,7 +183,7 @@ public class VoiceKSDHActiivty extends BaseChatActivity{
         if (mAliRtcEngine != null) {
             mAliRtcEngine.setRtcEngineEventListener(mEventListener);
             mAliRtcEngine.setRtcEngineNotify(mEngineNotify);
-            setConnect();
+            setConnect(true);
 ////
         }
     }
@@ -201,18 +203,18 @@ public class VoiceKSDHActiivty extends BaseChatActivity{
         if (mAliRtcEngine != null) {
             mAliRtcEngine.setRtcEngineEventListener(mEventListener);
             mAliRtcEngine.setRtcEngineNotify(mEngineNotify);
-            setConnect();
+            setConnect(false);
         }
     }
 
     /**
      * 加入频道 自动发布订阅
      */
-    public void setConnect() {
+    public void setConnect(Boolean iscall) {
         ThreadUtils.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                joinChannel(rtcInfor,true);
+                joinChannel(rtcInfor,iscall);
             }
         }, 100);
     }
@@ -225,11 +227,12 @@ public class VoiceKSDHActiivty extends BaseChatActivity{
     public void setTypeUi(String typeUi) {
 
         if (typeUi.equals("come")) {
-            if(!isOnline(rtcInfor.getFrom())){
-                ToastUtis("对方已挂断");
-                finish();
-                return;
-            }
+            isonline3s();
+//            if(!isOnline(rtcInfor.getFrom())){
+//                ToastUtis("对方已挂断");
+//                finish();
+//                return;
+//            }
             voicejieshou.setVisibility(View.VISIBLE);
             voiceCancel.setVisibility(View.VISIBLE);
         } else if (typeUi.equals("go")) {
@@ -427,6 +430,7 @@ public class VoiceKSDHActiivty extends BaseChatActivity{
         @Override
         public void onRemoteUserOnLineNotify(String s) {
             Log.i("hcc", "onRemoteUserOnLineNotify==" + s);
+            isonline=true;
 
 //            addRemoteUser(s);
         }
@@ -476,9 +480,9 @@ public class VoiceKSDHActiivty extends BaseChatActivity{
         public void onParticipantSubscribeNotify(AliSubscriberInfo[] aliSubscriberInfos, int i) {
             Log.i("hcc", "订阅信息==" + i);
             if (i > 0) {
-                if (call_type.equals("go")) {
-                    setGetVoice(aliSubscriberInfos[0].user_id);
-                }
+//                if (call_type.equals("go")) {
+//                    setGetVoice(aliSubscriberInfos[0].user_id);
+//                }
             }
 
 
@@ -597,10 +601,37 @@ public class VoiceKSDHActiivty extends BaseChatActivity{
 
     @Override
     protected void onDestroy() {
+        isonline=true;
         if(HOOKReceview!=null){
             unregisterReceiver(HOOKReceview);
         }
         super.onDestroy();
     }
 
+    int online_count=0;
+    private void isonline3s(){
+        ThreadUtils.runOnSubThread(new Runnable() {
+            @Override
+            public void run() {
+                while (!isonline){
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    online_count++;
+                    if(online_count>=3){
+                        ThreadUtils.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ToastUtis("对方已挂断");
+                                finish();
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+    }
 }

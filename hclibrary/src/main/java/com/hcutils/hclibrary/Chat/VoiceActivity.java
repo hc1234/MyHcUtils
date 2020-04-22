@@ -4,8 +4,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ import com.hcutils.hclibrary.Datautils.PermissionUtils;
 import com.hcutils.hclibrary.R;
 import com.hcutils.hclibrary.R2;
 import com.hcutils.hclibrary.Utils.ThreadUtils;
+import com.hcutils.hclibrary.views.CircleImageView;
 
 import org.webrtc.alirtcInterface.AliParticipantInfo;
 import org.webrtc.alirtcInterface.AliStatusInfo;
@@ -30,43 +33,67 @@ import butterknife.OnClick;
 
 public class VoiceActivity extends BaseChatActivity {
 
-    @BindView(R2.id.voice_touser_personimage)
-    ImageView voiceTouserPersonimage;
-    @BindView(R2.id.voice_touser_name)
-    TextView voiceTouserName;
-    @BindView(R2.id.voice_touser_type)
-    TextView voiceTouserType;
-    @BindView(R2.id.voice_time)
-    TextView voiceTime;
-    @BindView(R2.id.voice_touser_line)
-    LinearLayout voiceTouserLine;
-    @BindView(R2.id.voice_checkvoice)
-    CheckBox voiceCheckvoice;
-    @BindView(R2.id.voicejieshou)
-    TextView voicejieshou;
-    @BindView(R2.id.voice_cancel)
-    TextView voiceCancel;
+    @BindView(R2.id.content_frame_1)
+    FrameLayout contentFrame1;
+    @BindView(R2.id.content_frame_2)
+    FrameLayout contentFrame2;
+    @BindView(R2.id.content_relative)
+    RelativeLayout contentRelative;
+    @BindView(R2.id.person_image)
+    CircleImageView personImage;
+    @BindView(R2.id.person_image_line)
+    LinearLayout personImageLine;
+    @BindView(R2.id.person_name)
+    TextView personName;
+    @BindView(R2.id.chat_status)
+    TextView chatStatus;
+    @BindView(R2.id.chat_count)
+    TextView chatCount;
+    @BindView(R2.id.chat_voice)
+    TextView chatVoice;
+    @BindView(R2.id.chat_voice_line)
+    LinearLayout chatVoiceLine;
+    @BindView(R2.id.chat_guaduan)
+    TextView chatGuaduan;
+    @BindView(R2.id.chat_guaduan_line)
+    LinearLayout chatGuaduanLine;
+    @BindView(R2.id.chat_jieting)
+    TextView chatJieting;
+    @BindView(R2.id.chat_jieting_line)
+    LinearLayout chatJietingLine;
+    @BindView(R2.id.chat_swi)
+    TextView chatSwi;
+    @BindView(R2.id.chat_swi_line)
+    LinearLayout chatSwiLine;
+    @BindView(R2.id.head_line)
+    LinearLayout headLine;
+
+
+
 
 
     String call_type;  //拨打 还是接听  come  go
     CallInfor callInfor; //拨打的时候传入 拨打信息
     String username;
     RTCInfor rtcInfor = new RTCInfor();
+    Boolean isonline=false;  //对方是否在线
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_voice);
+        setContentView(R.layout.activity_new_chat);
         ButterKnife.bind(this);
+        contentRelative.setVisibility(View.GONE);
+        isonline=false;
         call_type = getIntent().getStringExtra("type");
         callInfor = getIntent().getParcelableExtra("infor");
+        registHOOK();
         setTypeUi("");
-        voiceTouserType.setText("正在获取信息中");
-        voiceTouserName.setText("");
         chcekPermisson();
         if (!GetSpeakerphone()) {
             setSpeakerphone();
         }
 
+        setLoadimage(callInfor.getMemo(),personImage);
     }
 
     /**
@@ -87,20 +114,19 @@ public class VoiceActivity extends BaseChatActivity {
             }
         });
     }
-
-
-    @OnClick({R2.id.voice_checkvoice, R2.id.voicejieshou, R2.id.voice_cancel})
+    @OnClick({R2.id.chat_voice, R2.id.chat_guaduan, R2.id.chat_jieting, R2.id.chat_swi})
     public void onClick(View view) {
         int id = view.getId();
-        if (id == R.id.voice_checkvoice) {
+        if (id == R.id.chat_voice) {
             setSpeakerphone();
-        } else if (id == R.id.voicejieshou) {
+        } else if (id == R.id.chat_guaduan) {
+            finish();
+        } else if (id == R.id.chat_jieting) {
             stopMusic();
             setGetVideo(rtcInfor.getFrom());
-        } else if (id == R.id.voice_cancel) {
-            finish();
         }
     }
+
 
     /**
      * 获取信息
@@ -164,9 +190,6 @@ public class VoiceActivity extends BaseChatActivity {
      * 开始拨打
      */
     private void startToCall() {
-        palyCallMusic();
-        voiceTouserType.setText("正在拨打中，请稍后...");
-        voiceTouserName.setText(username);
         if (!DataUtis.isEmuis(rtcInfor)) {
             ToastUtis("获取信息有误");
             finish();
@@ -175,7 +198,7 @@ public class VoiceActivity extends BaseChatActivity {
         if (mAliRtcEngine != null) {
             mAliRtcEngine.setRtcEngineEventListener(mEventListener);
             mAliRtcEngine.setRtcEngineNotify(mEngineNotify);
-            setConnect();
+            setConnect(true);
 ////
         }
     }
@@ -185,9 +208,6 @@ public class VoiceActivity extends BaseChatActivity {
      */
     private void startToAnswer() {
 
-        palyComeMusic();
-        voiceTouserType.setText("您有一个语音来电");
-        voiceTouserName.setText(username);
         if (!DataUtis.isEmuis(rtcInfor)) {
             ToastUtis("获取信息有误");
             return;
@@ -195,18 +215,18 @@ public class VoiceActivity extends BaseChatActivity {
         if (mAliRtcEngine != null) {
             mAliRtcEngine.setRtcEngineEventListener(mEventListener);
             mAliRtcEngine.setRtcEngineNotify(mEngineNotify);
-            setConnect();
+            setConnect(false);
         }
     }
 
     /**
      * 加入频道 自动发布订阅
      */
-    public void setConnect() {
+    public void setConnect(Boolean iscall) {
         ThreadUtils.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                joinChannel(rtcInfor,true);
+                joinChannel(rtcInfor,iscall);
             }
         }, 100);
     }
@@ -219,25 +239,36 @@ public class VoiceActivity extends BaseChatActivity {
     public void setTypeUi(String typeUi) {
 
         if (typeUi.equals("come")) {
-            if(!isOnline(rtcInfor.getFrom())){
-                ToastUtis("对方已挂断");
-                finish();
-                return;
-            }
-            voicejieshou.setVisibility(View.VISIBLE);
-            voiceCancel.setVisibility(View.VISIBLE);
+            palyComeMusic();
+            isonline3s();
+            chatStatus.setText("您有一个语音电话");
+            personName.setText(username);
+            personImageLine.setVisibility(View.VISIBLE);
+            personName.setVisibility(View.VISIBLE);
+            chatGuaduanLine.setVisibility(View.VISIBLE);
+            chatJietingLine.setVisibility(View.VISIBLE);
         } else if (typeUi.equals("go")) {
-            voicejieshou.setVisibility(View.GONE);
-            voiceCancel.setVisibility(View.VISIBLE);
+            palyCallMusic();
+            chatStatus.setText("正在拨打语音中，请稍后...");
+            personName.setText(username);
+            personImageLine.setVisibility(View.VISIBLE);
+            personName.setVisibility(View.VISIBLE);
+            chatGuaduanLine.setVisibility(View.VISIBLE);
         } else if (typeUi.equals("conect")) {
             stopCount();
-            voiceTouserLine.setVisibility(View.VISIBLE);
-            voiceTouserType.setText("正在通话中");
-            voicejieshou.setVisibility(View.GONE);
-            voiceCancel.setVisibility(View.VISIBLE);
+            chatStatus.setText("通话已连接");
+            chatJietingLine.setVisibility(View.GONE);
+            chatSwiLine.setVisibility(View.GONE);
+            chatVoiceLine.setVisibility(View.GONE);
+
+//            if(callInfor.getPush_type()!=null&&callInfor.getPush_type().equals("D2P")){
+//                chatVoiceLine.setVisibility(View.GONE);
+//            }else {
+//                chatVoiceLine.setVisibility(View.VISIBLE);
+//            }
+            chatCount.setVisibility(View.VISIBLE);
         }else{
-            voicejieshou.setVisibility(View.GONE);
-            voiceCancel.setVisibility(View.GONE);
+
         }
     }
 
@@ -306,7 +337,7 @@ public class VoiceActivity extends BaseChatActivity {
                                       AliRtcEngine.AliRtcAudioTrack aliRtcAudioTrack) {
             Log.i("hcc", "订阅==" + i + "  " + s);
             if (i == 0) {
-                setThreadTime(voiceTime);
+                setThreadTime(chatCount);
                 ThreadUtils.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -421,6 +452,7 @@ public class VoiceActivity extends BaseChatActivity {
         @Override
         public void onRemoteUserOnLineNotify(String s) {
             Log.i("hcc", "onRemoteUserOnLineNotify==" + s);
+            isonline=true;
 
 //            addRemoteUser(s);
         }
@@ -470,9 +502,9 @@ public class VoiceActivity extends BaseChatActivity {
         public void onParticipantSubscribeNotify(AliSubscriberInfo[] aliSubscriberInfos, int i) {
             Log.i("hcc", "订阅信息==" + i);
             if (i > 0) {
-                if (call_type.equals("go")) {
-                    setGetVoice(aliSubscriberInfos[0].user_id);
-                }
+//                if (call_type.equals("go")) {
+//                    setGetVoice(aliSubscriberInfos[0].user_id);
+//                }
             }
 
 
@@ -564,5 +596,37 @@ public class VoiceActivity extends BaseChatActivity {
 //        }
     };
 
+    @Override
+    protected void onDestroy() {
+        isonline=true;
+        super.onDestroy();
 
+    }
+
+    int online_count=0;
+    private void isonline3s(){
+        ThreadUtils.runOnSubThread(new Runnable() {
+            @Override
+            public void run() {
+                while (!isonline){
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    online_count++;
+                    if(online_count>=3){
+                        ThreadUtils.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ToastUtis("对方已挂断");
+                                finish();
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+    }
 }

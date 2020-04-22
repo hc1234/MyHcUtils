@@ -1,20 +1,25 @@
 package com.hcutils.hclibrary.Chat;
 
 import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import com.alivc.rtc.AliRtcAuthInfo;
 import com.alivc.rtc.AliRtcEngine;
+import com.bumptech.glide.Glide;
 import com.hcutils.hclibrary.Datautils.DataUtis;
 import com.hcutils.hclibrary.Datautils.SounPoilUtill;
+import com.hcutils.hclibrary.R;
 import com.hcutils.hclibrary.Utils.ThreadUtils;
 import com.hcutils.hclibrary.network.NetWorkBobyInfor;
 import com.hcutils.hclibrary.network.NetworkConstant;
@@ -24,7 +29,7 @@ import java.util.List;
 
 
 public class BaseChatActivity extends HcUtisBaseActivty {
-    public interface NetWorkResult{
+    public interface NetWorkResult {
         void result(int code, String data);
     }
 
@@ -40,7 +45,7 @@ public class BaseChatActivity extends HcUtisBaseActivty {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("hcc","base");
+        Log.i("hcc", "base");
 
         initRTCEngineAndStartPreview();
         SounPoilUtill.Getinstanc(BaseChatActivity.this);
@@ -64,18 +69,19 @@ public class BaseChatActivity extends HcUtisBaseActivty {
     /**
      * 切换 听筒 扬声器
      */
-    public void setSpeakerphone(){
-        if(mAliRtcEngine!=null){
+    public void setSpeakerphone() {
+        if (mAliRtcEngine != null) {
             mAliRtcEngine.enableSpeakerphone(!GetSpeakerphone());
         }
     }
 
     /**
      * 判断是否扬声器
+     *
      * @return
      */
-    public Boolean GetSpeakerphone(){
-        if(mAliRtcEngine!=null){
+    public Boolean GetSpeakerphone() {
+        if (mAliRtcEngine != null) {
             return mAliRtcEngine.isSpeakerOn();
         }
         return false;
@@ -84,9 +90,10 @@ public class BaseChatActivity extends HcUtisBaseActivty {
 
     /**
      * 加入频道
+     *
      * @param rtcInfor
      */
-    public void joinChannel(RTCInfor rtcInfor ,Boolean cammer ) {
+    public void joinChannel(RTCInfor rtcInfor, Boolean iscall) {
         if (mAliRtcEngine == null) {
             return;
         }
@@ -98,56 +105,85 @@ public class BaseChatActivity extends HcUtisBaseActivty {
         userInfo.setGslb(rtcInfor.getGslb());
         userInfo.setToken(rtcInfor.getToken());
         userInfo.setConferenceId(rtcInfor.getChannel());
-        Log.i("hcc2",rtcInfor.getAppid()+" "+rtcInfor.getChannel()+" "+rtcInfor.getUserid()+" "+rtcInfor.getNonce()+" "+rtcInfor.getTimestamp()+" "+rtcInfor.getToken()+" "+rtcInfor.getGslb()[0]);
+        Log.i("hcc2", rtcInfor.getAppid() + " " + rtcInfor.getChannel() + " " + rtcInfor.getUserid() + " " + rtcInfor.getNonce() + " " + rtcInfor.getTimestamp() + " " + rtcInfor.getToken() + " " + rtcInfor.getGslb()[0]);
         /*
          *设置自动发布和订阅，只能在joinChannel之前设置
          *参数1    true表示自动发布；false表示手动发布
          *参数2    true表示自动订阅；false表示手动订阅
          */
 //        mAliRtcEngine.setChannelProfile(ALI_RTC_INTERFACE.AliRTCSDK_Channel_Profile.AliRTCSDK_Communication);
-        mAliRtcEngine.setAutoPublishSubscribe(true, false);
-        mAliRtcEngine.configLocalCameraPublish(cammer);
+
+        if (!iscall) {
+            mAliRtcEngine.setAutoPublishSubscribe(false, false);
+        } else {
+            mAliRtcEngine.setAutoPublishSubscribe(true, true);
+        }
+
+//        mAliRtcEngine.configLocalCameraPublish(cammer);
         // 加入频道
         mAliRtcEngine.joinChannel(userInfo, rtcInfor.getUsername());
     }
 
-    public void palyCallMusic(){
-        if(mAliRtcEngine!=null){
+    public void palyCallMusic() {
+        if (mAliRtcEngine != null) {
             SounPoilUtill.Getinstanc(BaseChatActivity.this).playrool(2);
         }
     }
 
-    public void palyComeMusic(){
-        if(mAliRtcEngine!=null){
+    public void palyComeMusic() {
+        if (mAliRtcEngine != null) {
             SounPoilUtill.Getinstanc(BaseChatActivity.this).playrool(1);
         }
     }
-    public void stopMusic(){
+
+    public void stopMusic() {
         SounPoilUtill.Getinstanc(BaseChatActivity.this).stop();
     }
 
     /**
-     * 手动订阅 视频
+     * 手动订阅 发布 视频
+     *
      * @param uid
      */
-    public void setGetVideo(String uid){
-        if(mAliRtcEngine!=null){
-            mAliRtcEngine.configRemoteCameraTrack(uid,true,true);
-            mAliRtcEngine.configRemoteScreenTrack(uid,true);
-            mAliRtcEngine.configRemoteAudio(uid,true);
+    public void setGetVideo(String uid) {
+        if (mAliRtcEngine != null) {
+            //发布本地流设置
+            //true表示允许发布音频流，false表示不允许
+            mAliRtcEngine.configLocalAudioPublish(true);
+            //true表示允许发布相机流，false表示不允许
+            mAliRtcEngine.configLocalCameraPublish(true);
+            mAliRtcEngine.configLocalSimulcast(true, AliRtcEngine.AliRtcVideoTrack.AliRtcVideoTrackCamera);
+            mAliRtcEngine.publish();
+
+            mAliRtcEngine.configRemoteCameraTrack(uid, true, true);
+            mAliRtcEngine.configRemoteScreenTrack(uid, true);
+            mAliRtcEngine.configRemoteAudio(uid, true);
             mAliRtcEngine.subscribe(uid);
         }
-
     }
+
     /**
      * 手动订阅 音频
+     *
      * @param uid
      */
-    public void setGetVoice(String uid){
-        if(mAliRtcEngine!=null){
-            mAliRtcEngine.configRemoteCameraTrack(uid,false,false);
-            mAliRtcEngine.configRemoteScreenTrack(uid,false);
-            mAliRtcEngine.configRemoteAudio(uid,true);
+    public void setGetVoice(String uid) {
+        if (mAliRtcEngine != null) {
+
+            //发布本地流设置
+            //true表示允许发布音频流，false表示不允许
+            mAliRtcEngine.configLocalAudioPublish(true);
+            //true表示允许发布相机流，false表示不允许
+            mAliRtcEngine.configLocalCameraPublish(false);
+            //true表示允许发布屏幕流，false表示不允许
+            mAliRtcEngine.configLocalScreenPublish(false);
+            //true表示允许发布次要视频流；false表示不允许
+            mAliRtcEngine.configLocalSimulcast(false, AliRtcEngine.AliRtcVideoTrack.AliRtcVideoTrackCamera);
+            mAliRtcEngine.publish();
+
+            mAliRtcEngine.configRemoteCameraTrack(uid, false, false);
+            mAliRtcEngine.configRemoteScreenTrack(uid, false);
+            mAliRtcEngine.configRemoteAudio(uid, true);
             mAliRtcEngine.subscribe(uid);
         }
 
@@ -180,7 +216,7 @@ public class BaseChatActivity extends HcUtisBaseActivty {
     /**
      * 开启前台服务
      */
-    public void startServer(){
+    public void startServer() {
 
         if (null == mForeServiceIntent) {
             mForeServiceIntent = new Intent(BaseChatActivity.this.getApplicationContext(),
@@ -192,37 +228,41 @@ public class BaseChatActivity extends HcUtisBaseActivty {
             startService(mForeServiceIntent);
         }
     }
+
     /**
      * 销毁服务
      */
-    public void desServer(){
+    public void desServer() {
         //销毁服务
         if (null != mForeServiceIntent && isServiceRunning(this.getApplicationContext(),
                 ForegroundService.class.getName())) {
             stopService(mForeServiceIntent);
         }
     }
-    public Boolean isOnline(String uid){
-        if(mAliRtcEngine!=null) {
-            String [] strings=mAliRtcEngine.getOnlineRemoteUsers();
-            Log.i("hcc","isOnline=="+uid+"  "+mAliRtcEngine.isUserOnline(uid)+"  数量=="+mAliRtcEngine.getOnlineRemoteUsers().length);
-            if(strings.length>0){
-                return true;
-            }
-            return mAliRtcEngine.isUserOnline(uid);
-        }else{
-            return false;
-        }
+
+    public Boolean isOnline(String uid) {
+//        if(mAliRtcEngine!=null) {
+//            String [] strings=mAliRtcEngine.getOnlineRemoteUsers();
+//            Log.i("hcc","isOnline=="+uid+"  "+mAliRtcEngine.isUserOnline(uid)+"  数量=="+mAliRtcEngine.getOnlineRemoteUsers().length);
+//            if(strings.length>0){
+//                return true;
+//            }
+//            return mAliRtcEngine.isUserOnline(uid);
+//        }else{
+//            return false;
+//        }
+        return true;
     }
 
     /**
      * 判断服务是否运行
+     *
      * @param context
      * @param serviceName
      * @return
      */
-    public  boolean isServiceRunning(Context context, String serviceName) {
-        if (TextUtils.isEmpty(serviceName)){
+    public boolean isServiceRunning(Context context, String serviceName) {
+        if (TextUtils.isEmpty(serviceName)) {
             return false;
         }
 
@@ -242,45 +282,47 @@ public class BaseChatActivity extends HcUtisBaseActivty {
 
     /**
      * 获取拨打电话信息
+     *
      * @param netWorkResult
      */
-     public void getCallInfor(NetWorkResult netWorkResult, CallInfor callInfor){
+    public void getCallInfor(NetWorkResult netWorkResult, CallInfor callInfor) {
 
-         NetWorkBobyInfor netWorkBobyInfor = new NetWorkBobyInfor();
-         netWorkBobyInfor.setAction(9);
-         netWorkBobyInfor.setIpaddress(NetworkConstant.Videophone);
-         netWorkBobyInfor.setISshowDialog(false);
-         netWorkBobyInfor.setParameters(NetworkConstant.Videophone_a9);
-         netWorkBobyInfor.setParameters_value(new String[]{callInfor.getDevice(),callInfor.getFrom(),callInfor.getTo(),callInfor.getType(),callInfor.getRelkey()});
-         netWorkBobyInfor.setCallBack(new NetWorkBobyInfor.CallBack() {
-             @Override
-             public void setresult(int code, String data) {
+        NetWorkBobyInfor netWorkBobyInfor = new NetWorkBobyInfor();
+        netWorkBobyInfor.setAction(9);
+        netWorkBobyInfor.setIpaddress(NetworkConstant.Videophone);
+        netWorkBobyInfor.setISshowDialog(false);
+        netWorkBobyInfor.setParameters(NetworkConstant.Videophone_a9);
+        netWorkBobyInfor.setParameters_value(new String[]{callInfor.getDevice(), callInfor.getFrom(), callInfor.getTo(), callInfor.getType(), callInfor.getRelkey()});
+        netWorkBobyInfor.setCallBack(new NetWorkBobyInfor.CallBack() {
+            @Override
+            public void setresult(int code, String data) {
 
-                 if(code==0){
-                     startCount(BaseChatActivity.this);
-                     netWorkResult.result(code,data);
+                if (code == 0) {
+                    startCount(BaseChatActivity.this);
+                    netWorkResult.result(code, data);
                     RTCInfor rtcInfor = DataUtis.parseToJson(data);
-                    if(callInfor.getPush_type().equals("D2P")){
-                        pushTuisongD2P(callInfor.getTo(),callInfor.getDevice(),rtcInfor.getChannel(),callInfor.getType());
-                    }else if(callInfor.getPush_type().equals("P2D")){
-                        pushTuisongP2D(callInfor.getRelkey(),callInfor.getTo(),rtcInfor.getChannel(),callInfor.getType());
-                    }else if(callInfor.getPush_type().equals("P2P")){
-                        pushTuisongP2P(callInfor.getRelkey(),callInfor.getTo(),rtcInfor.getChannel(),callInfor.getType());
+                    if (callInfor.getPush_type().equals("D2P")) {
+                        pushTuisongD2P(callInfor.getTo(), callInfor.getDevice(), rtcInfor.getChannel(), callInfor.getType());
+                    } else if (callInfor.getPush_type().equals("P2D")) {
+                        pushTuisongP2D(callInfor.getRelkey(), callInfor.getTo(), rtcInfor.getChannel(), callInfor.getType());
+                    } else if (callInfor.getPush_type().equals("P2P")) {
+                        pushTuisongP2P(callInfor.getRelkey(), callInfor.getTo(), rtcInfor.getChannel(), callInfor.getType());
                     }
-                 }else{
-                     ToastUtis("信息获取失败");
-                     finish();
-                 }
-             }
-         });
-         NetworkUtil.func_post(netWorkBobyInfor,BaseChatActivity.this);
-     }
+                } else {
+                    ToastUtis("信息获取失败");
+                    finish();
+                }
+            }
+        });
+        NetworkUtil.func_post(netWorkBobyInfor, BaseChatActivity.this);
+    }
 
     /**
      * 获取接听电话信息
+     *
      * @param netWorkResult
      */
-    public void getAnswerInfor(NetWorkResult netWorkResult,String channel){
+    public void getAnswerInfor(NetWorkResult netWorkResult, String channel) {
         NetWorkBobyInfor netWorkBobyInfor = new NetWorkBobyInfor();
         netWorkBobyInfor.setAction(10);
         netWorkBobyInfor.setIpaddress(NetworkConstant.Videophone);
@@ -290,31 +332,32 @@ public class BaseChatActivity extends HcUtisBaseActivty {
         netWorkBobyInfor.setCallBack(new NetWorkBobyInfor.CallBack() {
             @Override
             public void setresult(int code, String data) {
-                if(code==0){
-                    netWorkResult.result(code,data);
-                }else{
+                if (code == 0) {
+                    netWorkResult.result(code, data);
+                } else {
                     ToastUtis("信息获取失败");
                     finish();
                 }
 
             }
         });
-        NetworkUtil.func_post(netWorkBobyInfor,BaseChatActivity.this);
+        NetworkUtil.func_post(netWorkBobyInfor, BaseChatActivity.this);
     }
 
     /**
      * 发送推送 设备推送给人
+     *
      * @param user
      * @param divicenumber
      * @param cannne
      * @param callType
      */
-    public void pushTuisongD2P(String user,String divicenumber,String cannne,String callType){
+    public void pushTuisongD2P(String user, String divicenumber, String cannne, String callType) {
         NetWorkBobyInfor netWorkBobyInfor = new NetWorkBobyInfor();
         netWorkBobyInfor.setAction(3);
         netWorkBobyInfor.setIpaddress(NetworkConstant.Bridge);
         netWorkBobyInfor.setParameters(NetworkConstant.Bridge_arr_a3);
-        netWorkBobyInfor.setParameters_value(new Object[]{user, divicenumber, cannne,callType});
+        netWorkBobyInfor.setParameters_value(new Object[]{user, divicenumber, cannne, callType});
         netWorkBobyInfor.setCallBack(new NetWorkBobyInfor.CallBack() {
             @Override
             public void setresult(int code, String data) {
@@ -322,23 +365,24 @@ public class BaseChatActivity extends HcUtisBaseActivty {
 
             }
         });
-        NetworkUtil.func_post(netWorkBobyInfor,BaseChatActivity.this);
+        NetworkUtil.func_post(netWorkBobyInfor, BaseChatActivity.this);
     }
 
 
     /**
-     *  发送推送 人推送给设备
+     * 发送推送 人推送给设备
+     *
      * @param relkey
      * @param divicenumber
      * @param cannel
      * @param callType
      */
-    public void pushTuisongP2D(String relkey,String divicenumber,String cannel,String callType){
+    public void pushTuisongP2D(String relkey, String divicenumber, String cannel, String callType) {
         NetWorkBobyInfor netWorkBobyInfor = new NetWorkBobyInfor();
         netWorkBobyInfor.setAction(1);
         netWorkBobyInfor.setIpaddress(NetworkConstant.Bridge);
         netWorkBobyInfor.setParameters(NetworkConstant.Bridge_arr_a1);
-        netWorkBobyInfor.setParameters_value(new Object[]{divicenumber,relkey,cannel, callType});
+        netWorkBobyInfor.setParameters_value(new Object[]{divicenumber, relkey, cannel, callType});
         netWorkBobyInfor.setCallBack(new NetWorkBobyInfor.CallBack() {
             @Override
             public void setresult(int code, String data) {
@@ -346,22 +390,23 @@ public class BaseChatActivity extends HcUtisBaseActivty {
 
             }
         });
-        NetworkUtil.func_post(netWorkBobyInfor,BaseChatActivity.this);
+        NetworkUtil.func_post(netWorkBobyInfor, BaseChatActivity.this);
     }
 
     /**
      * 人推送给人
+     *
      * @param relkey
      * @param user
      * @param cannel
      * @param callType
      */
-    public void pushTuisongP2P(String relkey,String user,String cannel,String callType){
+    public void pushTuisongP2P(String relkey, String user, String cannel, String callType) {
         NetWorkBobyInfor netWorkBobyInfor = new NetWorkBobyInfor();
         netWorkBobyInfor.setAction(2);
         netWorkBobyInfor.setIpaddress(NetworkConstant.Bridge);
         netWorkBobyInfor.setParameters(NetworkConstant.Bridge_arr_a2);
-        netWorkBobyInfor.setParameters_value(new Object[]{user,relkey,cannel, callType});
+        netWorkBobyInfor.setParameters_value(new Object[]{user, relkey, cannel, callType});
         netWorkBobyInfor.setCallBack(new NetWorkBobyInfor.CallBack() {
             @Override
             public void setresult(int code, String data) {
@@ -369,21 +414,24 @@ public class BaseChatActivity extends HcUtisBaseActivty {
 
             }
         });
-        NetworkUtil.func_post(netWorkBobyInfor,BaseChatActivity.this);
+        NetworkUtil.func_post(netWorkBobyInfor, BaseChatActivity.this);
     }
 
-    Boolean closeTime=true;
-    int hours = 0, min = 0, seco = 0;
-    public void stopThreadTime(){
-        closeTime=false;
+    Boolean closeTime = true;
+    int min = 0, seco = 0;
+
+    public void stopThreadTime() {
+        closeTime = false;
     }
-    public void setThreadTime(TextView textView){
-        closeTime=true;
-        hours = 0; min = 0; seco = 0;
+
+    public void setThreadTime(TextView textView) {
+        closeTime = true;
+        min = 0;
+        seco = 0;
         ThreadUtils.runOnSubThread(new Runnable() {
             @Override
             public void run() {
-                while (closeTime){
+                while (closeTime) {
                     ThreadUtils.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -401,26 +449,28 @@ public class BaseChatActivity extends HcUtisBaseActivty {
         });
     }
 
-    Boolean DownCount=true;
-    int count=0;
-    public void stopCount(){
-        DownCount=false;
+    Boolean DownCount = true;
+    int count = 0;
+
+    public void stopCount() {
+        DownCount = false;
     }
-    public void  startCount(Context context){
-        count=0;
-        DownCount=true;
+
+    public void startCount(Context context) {
+        count = 0;
+        DownCount = true;
         ThreadUtils.runOnSubThread(new Runnable() {
             @Override
             public void run() {
-                while (DownCount){
+                while (DownCount) {
                     count++;
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    if(count>=60){
-                        DownCount=false;
+                    if (count >= 60) {
+                        DownCount = false;
                         ThreadUtils.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -431,7 +481,7 @@ public class BaseChatActivity extends HcUtisBaseActivty {
                                         ToastUtis("对方无人接听,请稍后再拨");
                                         finish();
                                     }
-                                },1000);
+                                }, 1000);
 
                             }
                         });
@@ -442,35 +492,54 @@ public class BaseChatActivity extends HcUtisBaseActivty {
 
     }
 
-    private String parseTime(){
-            if(seco<60){
-                seco++;
-            }else{
-                seco=0;
-                if(min<60){
-                    min++;
-                }else{
-                    hours++;
-                    min=0;
-                }
+    private String parseTime() {
+        if (seco < 60) {
+            seco++;
+        } else {
+            seco = 0;
+            min++;
 
-            }
-            String secostr=""+seco;
-            String minstr=""+min;
-            String hourstr=""+hours;
-            if(secostr.length()<2){
-                secostr="0"+secostr;
-            }
-            if(minstr.length()<2){
-                minstr="0"+minstr;
-            }
-            if(hourstr.length()<2){
-                hourstr="0"+hourstr;
-            }
-            return hourstr+" : "+minstr+" : "+secostr;
+        }
+        String secostr = "" + seco;
+        String minstr = "" + min;
+        if (secostr.length() < 2) {
+            secostr = "0" + secostr;
+        }
+        if (minstr.length() < 2) {
+            minstr = "0" + minstr;
+        }
+        return minstr + ":" + secostr;
     }
 
 
+    public void setLoadimage(String uri, ImageView imageView) {
+        Glide.with(BaseChatActivity.this).load(uri).error(R.mipmap.head_portrait).into(imageView);
+    }
 
 
+    public void registHOOK() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("zicoo.tele.HOOK_CTRL");
+        registerReceiver(HOOKReceview, intentFilter);
+    }
+
+
+    BroadcastReceiver HOOKReceview = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                int hooktype = intent.getIntExtra("hookstatus", 0);  // 0 听筒放下  1 听筒拿起
+                if (hooktype == 0) {
+                    if (!GetSpeakerphone()) {
+                        setSpeakerphone();
+                    }
+                } else {
+                    if (GetSpeakerphone()) {
+                        setSpeakerphone();
+                    }
+                }
+            }
+
+        }
+    };
 }

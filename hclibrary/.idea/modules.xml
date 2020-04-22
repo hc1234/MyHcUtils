@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/hclibrary.iml" filepath="$PROJECT_DIR$/hclibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../HcUtils.iml" filepath="$PROJECT_DIR$/../HcUtils.iml" group="HcUtils" />
+      <module fileurl="file://$PROJECT_DIR$/../app/app.iml" filepath="$PROJECT_DIR$/../app/app.iml" group="HcUtils/app" />
+      <module fileurl="file://$PROJECT_DIR$/hclibrary.iml" filepath="$PROJECT_DIR$/hclibrary.iml" group="HcUtils/hclibrary" />
     </modules>
   </component>
 </project>

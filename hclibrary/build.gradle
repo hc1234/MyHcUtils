@@ -47,6 +47,8 @@ dependencies {
     //https://github.com/JakeWharton/butterknife
     implementation 'com.jakewharton:butterknife:10.2.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+    //https://github.com/bumptech/glide 图片加载框架
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
     //网络框架
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'

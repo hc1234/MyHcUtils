@@ -32,6 +32,7 @@ import org.webrtc.alirtcInterface.AliStatusInfo;
 import org.webrtc.alirtcInterface.AliSubscriberInfo;
 import org.webrtc.sdk.SophonSurfaceView;
 
+import butterknife.BindBool;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -65,6 +66,7 @@ public class VideoKSDHActivity extends BaseChatVideoActivity {
     RecyclerView chartUserListView;
     SophonSurfaceView oppositeSurface;
     ChartUserAdapter mUserListAdapter;
+    Boolean isonline=false;  //对方是否在线
 
 
 
@@ -72,6 +74,7 @@ public class VideoKSDHActivity extends BaseChatVideoActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_ksdh);
+        isonline=false;
         ButterKnife.bind(this);
 
         call_type = getIntent().getStringExtra("type");
@@ -229,7 +232,7 @@ public class VideoKSDHActivity extends BaseChatVideoActivity {
         if (mAliRtcEngine != null) {
             mAliRtcEngine.setRtcEngineEventListener(mEventListener);
             mAliRtcEngine.setRtcEngineNotify(mEngineNotify);
-            setConnect();
+            setConnect(true);
 ////
         }
     }
@@ -249,9 +252,10 @@ public class VideoKSDHActivity extends BaseChatVideoActivity {
         if (mAliRtcEngine != null) {
             mAliRtcEngine.setRtcEngineEventListener(mEventListener);
             mAliRtcEngine.setRtcEngineNotify(mEngineNotify);
-            setConnect();
+            setConnect(false);
         }
     }
+
 
 
     @OnClick({R2.id.video_jieshou, R2.id.video_cancel})
@@ -269,13 +273,13 @@ public class VideoKSDHActivity extends BaseChatVideoActivity {
     /**
      * 加入频道 自动发布订阅
      */
-    public void setConnect() {
+    public void setConnect(Boolean iscall) {
         initLocalView(oppositeSurface);
         startPreview();
         ThreadUtils.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                joinChannel(rtcInfor,true);
+                joinChannel(rtcInfor,iscall);
             }
         }, 100);
     }
@@ -288,11 +292,7 @@ public class VideoKSDHActivity extends BaseChatVideoActivity {
     public void setTypeUi(String typeUi) {
 
         if (typeUi.equals("come")) {
-            if(!isOnline(rtcInfor.getFrom())){
-                ToastUtis("对方已挂断");
-                finish();
-                return;
-            }
+            isonline3s();
             videoJieshou.setVisibility(View.VISIBLE);
             videoCancel.setVisibility(View.VISIBLE);
         } else if (typeUi.equals("go")) {
@@ -309,7 +309,7 @@ public class VideoKSDHActivity extends BaseChatVideoActivity {
                     big_local = false;
                     swiSurface();
                 }
-            }, 500);
+            }, 300);
 
         }else{
             videoJieshou.setVisibility(View.GONE);
@@ -394,6 +394,8 @@ public class VideoKSDHActivity extends BaseChatVideoActivity {
 
             }
         }
+
+
 
         /**
          * 取消的回调
@@ -498,6 +500,8 @@ public class VideoKSDHActivity extends BaseChatVideoActivity {
         @Override
         public void onRemoteUserOnLineNotify(String s) {
             Log.i("hcc", "onRemoteUserOnLineNotify==" + s);
+            isonline=true;
+
 
 //            addRemoteUser(s);
         }
@@ -549,9 +553,9 @@ public class VideoKSDHActivity extends BaseChatVideoActivity {
         public void onParticipantSubscribeNotify(AliSubscriberInfo[] aliSubscriberInfos, int i) {
             Log.i("hcc", "订阅信息==" + i);
             if (i > 0) {
-                if (call_type.equals("go")) {
-                    setGetVideo(aliSubscriberInfos[0].user_id);
-                }
+//                if (call_type.equals("go")) {
+//                    setGetVideo(aliSubscriberInfos[0].user_id);
+//                }
             }
 
 
@@ -633,6 +637,7 @@ public class VideoKSDHActivity extends BaseChatVideoActivity {
 
         }
 
+
         /**
          * @param aliRtcStats
          * 实时数据回调(2s触发一次)
@@ -651,6 +656,7 @@ public class VideoKSDHActivity extends BaseChatVideoActivity {
 
     @Override
     protected void onDestroy() {
+        isonline=true;
         if(HOOKReceview!=null){
             unregisterReceiver(HOOKReceview);
         }
@@ -676,5 +682,32 @@ public class VideoKSDHActivity extends BaseChatVideoActivity {
 
         }
     };
+
+    int online_count=0;
+    private void isonline3s(){
+        ThreadUtils.runOnSubThread(new Runnable() {
+            @Override
+            public void run() {
+                while (!isonline){
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    online_count++;
+                    if(online_count>=3){
+                        ThreadUtils.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ToastUtis("对方已挂断");
+                                finish();
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+    }
 
 }

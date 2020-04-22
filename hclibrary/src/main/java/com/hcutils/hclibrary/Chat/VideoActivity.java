@@ -1,11 +1,13 @@
 package com.hcutils.hclibrary.Chat;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -24,6 +26,7 @@ import com.hcutils.hclibrary.Datautils.PermissionUtils;
 import com.hcutils.hclibrary.R;
 import com.hcutils.hclibrary.R2;
 import com.hcutils.hclibrary.Utils.ThreadUtils;
+import com.hcutils.hclibrary.views.CircleImageView;
 
 import org.webrtc.alirtcInterface.AliParticipantInfo;
 import org.webrtc.alirtcInterface.AliStatusInfo;
@@ -42,31 +45,34 @@ public class VideoActivity extends BaseChatVideoActivity {
     FrameLayout contentFrame2;
     @BindView(R2.id.content_relative)
     RelativeLayout contentRelative;
-    //    @BindView(R.id.opposite_surface)
-//
-//    @BindView(R.id.opposite_surface_small)
-//    SophonSurfaceView oppositeSurfaceSmall;
-    @BindView(R2.id.showinfor_number)
-    TextView showinforNumber;
-    @BindView(R2.id.showinfor_name)
-    TextView showinforName;
-    @BindView(R2.id.showinfor_line)
-    LinearLayout showinforLine;
-    @BindView(R2.id.call_type)
-    TextView callType;
-    @BindView(R2.id.video_checkvoice)
-    CheckBox videoCheckvoice;
-    @BindView(R2.id.call_guanduan)
-    TextView callGuanduan;
-    @BindView(R2.id.call_cancel)
-    TextView callCancel;
-    @BindView(R2.id.call_jie)
-    TextView callJie;
-    @BindView(R2.id.call_jie_line)
-    LinearLayout callJieLine;
-    @BindView(R2.id.swi_cammer)
-    ImageView swiCammer;
-
+    @BindView(R2.id.person_image)
+    CircleImageView personImage;
+    @BindView(R2.id.person_image_line)
+    LinearLayout personImageLine;
+    @BindView(R2.id.person_name)
+    TextView personName;
+    @BindView(R2.id.chat_status)
+    TextView chatStatus;
+    @BindView(R2.id.chat_count)
+    TextView chatCount;
+    @BindView(R2.id.chat_voice)
+    TextView chatVoice;
+    @BindView(R2.id.chat_voice_line)
+    LinearLayout chatVoiceLine;
+    @BindView(R2.id.chat_guaduan)
+    TextView chatGuaduan;
+    @BindView(R2.id.chat_guaduan_line)
+    LinearLayout chatGuaduanLine;
+    @BindView(R2.id.chat_jieting)
+    TextView chatJieting;
+    @BindView(R2.id.chat_jieting_line)
+    LinearLayout chatJietingLine;
+    @BindView(R2.id.chat_swi)
+    TextView chatSwi;
+    @BindView(R2.id.chat_swi_line)
+    LinearLayout chatSwiLine;
+    @BindView(R2.id.head_line)
+    LinearLayout headLine;
     String call_type;  //拨打 还是接听  come  go
     CallInfor callInfor; //拨打的时候传入 拨打信息
     String username;
@@ -74,25 +80,26 @@ public class VideoActivity extends BaseChatVideoActivity {
     //    @BindView(R.id.chart_content_userlist)
     RecyclerView chartUserListView;
     SophonSurfaceView oppositeSurface;
+    Boolean isonline = false;  //对方是否在线
+
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i("hcc", "video");
-        setContentView(R.layout.activity_video);
+        setContentView(R.layout.activity_new_chat);
         ButterKnife.bind(this);
+        isonline = false;
+        registHOOK();
         call_type = getIntent().getStringExtra("type");
         callInfor = getIntent().getParcelableExtra("infor");
         setTypeUi("");
-        showinforNumber.setText("正在获取信息中");
-        showinforName.setText("");
         chcekPermisson();
         if (!GetSpeakerphone()) {
             setSpeakerphone();
         }
 
-        videoCheckvoice.setChecked(GetSpeakerphone());
         initview();
         // 承载远程User的Adapter
         mUserListAdapter = new ChartUserAdapter();
@@ -120,7 +127,7 @@ public class VideoActivity extends BaseChatVideoActivity {
         contentFrame2.addView(chartUserListView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         oppositeSurface = new SophonSurfaceView(this);
         contentFrame1.addView(oppositeSurface, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-
+        setLoadimage(callInfor.getMemo(), personImage);
         contentFrame2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,6 +137,7 @@ public class VideoActivity extends BaseChatVideoActivity {
                 }
             }
         });
+
     }
 
     private void swiSurface() {
@@ -207,8 +215,8 @@ public class VideoActivity extends BaseChatVideoActivity {
                     if (VideoActivity.this != null && !VideoActivity.this.isFinishing()) {
                         if (code == 0) {
                             rtcInfor = DataUtis.parseToJson(data);
-                                rtcInfor.setUsername(username);
-                                startToAnswer();
+                            rtcInfor.setUsername(username);
+                            startToAnswer();
 
                         } else {
                             ToastUtis("信息获取失败");
@@ -227,9 +235,8 @@ public class VideoActivity extends BaseChatVideoActivity {
      * 开始拨打
      */
     private void startToCall() {
-        palyCallMusic();
-        showinforNumber.setText("正在拨打中，请稍后...");
-        showinforName.setText(username);
+
+
         if (!DataUtis.isEmuis(rtcInfor)) {
             ToastUtis("获取信息有误");
             finish();
@@ -238,19 +245,17 @@ public class VideoActivity extends BaseChatVideoActivity {
         if (mAliRtcEngine != null) {
             mAliRtcEngine.setRtcEngineEventListener(mEventListener);
             mAliRtcEngine.setRtcEngineNotify(mEngineNotify);
-            setConnect();
+            setConnect(true);
 ////
         }
     }
 
     /**
-     * 开始拨打
+     * 开始接听
      */
     private void startToAnswer() {
 
-        palyComeMusic();
-        showinforNumber.setText("您有一个视频来电");
-        showinforName.setText(username);
+
         if (!DataUtis.isEmuis(rtcInfor)) {
             ToastUtis("获取信息有误");
             return;
@@ -258,23 +263,21 @@ public class VideoActivity extends BaseChatVideoActivity {
         if (mAliRtcEngine != null) {
             mAliRtcEngine.setRtcEngineEventListener(mEventListener);
             mAliRtcEngine.setRtcEngineNotify(mEngineNotify);
-            setConnect();
+            setConnect(false);
         }
     }
 
-    @OnClick({R2.id.video_checkvoice, R2.id.call_guanduan, R2.id.call_cancel, R2.id.call_jie,R2.id.swi_cammer})
+    @OnClick({R2.id.chat_voice, R2.id.chat_guaduan, R2.id.chat_jieting, R2.id.chat_swi})
     public void onClick(View view) {
         int id = view.getId();
-        if (id == R.id.video_checkvoice) {
+        if (id == R.id.chat_voice) {
             setSpeakerphone();
-        } else if (id == R.id.call_guanduan) {
+        } else if (id == R.id.chat_guaduan) {
             finish();
-        } else if (id == R.id.call_cancel) {
-            finish();
-        } else if (id == R.id.call_jie) {
+        } else if (id == R.id.chat_jieting) {
             stopMusic();
             setGetVideo(rtcInfor.getFrom());
-        } else if (id == R.id.swi_cammer) {
+        } else if (id == R.id.chat_swi) {
             swiCamer();
         }
     }
@@ -282,13 +285,14 @@ public class VideoActivity extends BaseChatVideoActivity {
     /**
      * 加入频道 自动发布订阅
      */
-    public void setConnect() {
+    public void setConnect(Boolean iscall) {
+        contentRelative.setVisibility(View.VISIBLE);
         initLocalView(oppositeSurface);
         startPreview();
         ThreadUtils.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                joinChannel(rtcInfor,true);
+                joinChannel(rtcInfor, iscall);
             }
         }, 100);
     }
@@ -301,33 +305,44 @@ public class VideoActivity extends BaseChatVideoActivity {
     public void setTypeUi(String typeUi) {
 
         if (typeUi.equals("come")) {
-            if(!isOnline(rtcInfor.getFrom())){
-                ToastUtis("对方已挂断");
-                finish();
-                return;
-            }
-            callJieLine.setVisibility(View.VISIBLE);
-            callGuanduan.setVisibility(View.GONE);
+            palyComeMusic();
+            isonline3s();
+            chatStatus.setText("您有一个视频电话");
+            personName.setText(username);
+            personImageLine.setVisibility(View.VISIBLE);
+            personName.setVisibility(View.VISIBLE);
+            chatGuaduanLine.setVisibility(View.VISIBLE);
+            chatJietingLine.setVisibility(View.VISIBLE);
         } else if (typeUi.equals("go")) {
-            callJieLine.setVisibility(View.GONE);
-            callGuanduan.setVisibility(View.VISIBLE);
+            palyCallMusic();
+            chatStatus.setText("正在拨打视频中，请稍后...");
+            personName.setText(username);
+            personImageLine.setVisibility(View.VISIBLE);
+            personName.setVisibility(View.VISIBLE);
+            chatGuaduanLine.setVisibility(View.VISIBLE);
         } else if (typeUi.equals("conect")) {
-            callJieLine.setVisibility(View.GONE);
-            callGuanduan.setVisibility(View.VISIBLE);
-            showinforLine.setVisibility(View.GONE);
+            headLine.setVisibility(View.GONE);
+            chatJietingLine.setVisibility(View.GONE);
+
+            if(callInfor.getPush_type()!=null&&callInfor.getPush_type().equals("D2P")){
+                chatSwiLine.setVisibility(View.GONE);
+                chatVoiceLine.setVisibility(View.GONE);
+            }else {
+                chatSwiLine.setVisibility(View.VISIBLE);
+                chatVoiceLine.setVisibility(View.VISIBLE);
+            }
+            chatCount.setVisibility(View.VISIBLE);
             stopCount();
             ThreadUtils.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    big_local=false;
+                    big_local = false;
                     swiSurface();
                 }
-            },500);
+            }, 300);
 
-        }else{
-            callJieLine.setVisibility(View.GONE);
-            callGuanduan.setVisibility(View.GONE);
-            showinforLine.setVisibility(View.GONE);
+        } else {
+            contentRelative.setVisibility(View.GONE);
         }
     }
 
@@ -348,7 +363,7 @@ public class VideoActivity extends BaseChatVideoActivity {
                     setTypeUi(call_type);
                     //加入频道成功
                     startServer();
-                }else{
+                } else {
                     ToastUtis("通话连接失败");
                     finish();
                 }
@@ -396,17 +411,19 @@ public class VideoActivity extends BaseChatVideoActivity {
                                       AliRtcEngine.AliRtcAudioTrack aliRtcAudioTrack) {
             Log.i("hcc", "订阅==" + i + "  " + s);
             if (i == 0) {
-                setThreadTime(callType);
+
                 ThreadUtils.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         updateRemoteDisplay(s, aliRtcAudioTrack, aliRtcVideoTrack, mUserListAdapter);
                         stopMusic();
                         setTypeUi("conect");
+                        setThreadTime(chatCount);
                     }
                 });
 
             }
+
         }
 
         /**
@@ -512,6 +529,7 @@ public class VideoActivity extends BaseChatVideoActivity {
         @Override
         public void onRemoteUserOnLineNotify(String s) {
             Log.i("hcc", "onRemoteUserOnLineNotify==" + s);
+            isonline = true;
 
 //            addRemoteUser(s);
         }
@@ -562,11 +580,6 @@ public class VideoActivity extends BaseChatVideoActivity {
         @Override
         public void onParticipantSubscribeNotify(AliSubscriberInfo[] aliSubscriberInfos, int i) {
             Log.i("hcc", "订阅信息==" + i);
-            if (i > 0) {
-                if (call_type.equals("go")) {
-                    setGetVideo(aliSubscriberInfos[0].user_id);
-                }
-            }
 
 
         }
@@ -656,6 +669,44 @@ public class VideoActivity extends BaseChatVideoActivity {
 //
 //        }
     };
+
+    @Override
+    protected void onDestroy() {
+        isonline = true;
+        if(HOOKReceview!=null){
+            unregisterReceiver(HOOKReceview);
+        }
+        super.onDestroy();
+
+    }
+
+    int online_count = 0;
+
+    private void isonline3s() {
+        ThreadUtils.runOnSubThread(new Runnable() {
+            @Override
+            public void run() {
+                while (!isonline) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    online_count++;
+                    if (online_count >= 3) {
+                        ThreadUtils.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ToastUtis("对方已挂断");
+                                finish();
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+    }
 
 
 }

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@mipmap/chat_bg"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/content_relative"
+        >
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/content_frame_1"
+            ></FrameLayout>
+
+        <FrameLayout
+            android:layout_margin="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_width="100dp"
+            android:layout_height="120dp"
+            android:id="@+id/content_frame_2"
+            ></FrameLayout>
+    </RelativeLayout>
+
+    
+    <LinearLayout
+        android:id="@+id/head_line"
+        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
+        android:minHeight="100dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        >
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/person_image_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/wire_orva"
+            android:padding="15dp"
+            >
+            <com.hcutils.hclibrary.views.CircleImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@mipmap/head_portrait"
+                android:id="@+id/person_image"
+                ></com.hcutils.hclibrary.views.CircleImageView>
+
+        </LinearLayout>
+        <TextView
+            android:visibility="gone"
+            android:layout_marginTop="5dp"
+            android:id="@+id/person_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="姓名"
+            android:textSize="15sp"
+            android:textColor="@color/write"
+            android:textStyle="bold"
+            ></TextView>
+        
+        <TextView
+            android:id="@+id/chat_status"
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="正在连接中,请稍后..."
+            android:textColor="@color/write"
+            android:textSize="15sp"
+            ></TextView>
+    </LinearLayout>
+    
+    
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="15dp"
+        >
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/chat_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:text="00:00"
+            android:textColor="@color/write"
+            ></TextView>
+        
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/chat_voice_line"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                >
+                <TextView
+                    android:id="@+id/chat_voice"
+                    android:padding="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="扬声器"
+                    android:drawablePadding="8dp"
+                    android:textColor="@color/write"
+                    android:drawableTop="@mipmap/chat_voice"
+                    ></TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/chat_guaduan_line"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                >
+            <TextView
+                android:id="@+id/chat_guaduan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="挂断"
+                android:padding="5dp"
+                android:textColor="@color/write"
+                android:drawablePadding="8dp"
+                android:drawableTop="@mipmap/chat_guaduan"
+                ></TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/chat_jieting_line"
+                android:visibility="gone"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                >
+                <TextView
+                    android:id="@+id/chat_jieting"
+                    android:padding="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="接听"
+                    android:drawablePadding="8dp"
+                    android:textColor="@color/write"
+                    android:drawableTop="@mipmap/chat_jieting"
+                    ></TextView>
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/chat_swi_line"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                >
+                <TextView
+                    android:id="@+id/chat_swi"
+                    android:padding="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="切换相机"
+                    android:drawablePadding="8dp"
+                    android:textColor="@color/write"
+                    android:drawableTop="@mipmap/chat_swi"
+                    ></TextView>
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>
