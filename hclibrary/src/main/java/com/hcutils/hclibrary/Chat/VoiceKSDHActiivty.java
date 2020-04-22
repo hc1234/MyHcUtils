@@ -129,10 +129,8 @@ public class VoiceKSDHActiivty extends BaseChatActivity{
                         if (code == 0) {
                             rtcInfor = DataUtis.parseToJson(data);
                             rtcInfor.setUsername(username);
-                            setTypeUi(call_type);
                             startToCall();
                         } else {
-                            setTypeUi(call_type);
                             ToastUtis("信息获取失败");
                             finish();
                         }
@@ -152,13 +150,8 @@ public class VoiceKSDHActiivty extends BaseChatActivity{
                     if (VoiceKSDHActiivty.this != null && !VoiceKSDHActiivty.this.isFinishing()) {
                         if (code == 0) {
                             rtcInfor = DataUtis.parseToJson(data);
-                            if (isOnline(rtcInfor.getFrom())) {
                                 rtcInfor.setUsername(username);
                                 startToAnswer();
-                            } else {
-                                ToastUtis("通话已经结束");
-                                finish();
-                            }
 
                         } else {
                             ToastUtis("信息获取失败");
@@ -232,6 +225,11 @@ public class VoiceKSDHActiivty extends BaseChatActivity{
     public void setTypeUi(String typeUi) {
 
         if (typeUi.equals("come")) {
+            if(!isOnline(callInfor.getFrom())){
+                ToastUtis("对方已挂断");
+                finish();
+                return;
+            }
             voicejieshou.setVisibility(View.VISIBLE);
             voiceCancel.setVisibility(View.VISIBLE);
         } else if (typeUi.equals("go")) {
@@ -263,8 +261,12 @@ public class VoiceKSDHActiivty extends BaseChatActivity{
             Log.i("hcc", "i===" + i);
             runOnUiThread(() -> {
                 if (i == 0) {
+                    setTypeUi(call_type);
                     //加入频道成功
                     startServer();
+                }else{
+                    ToastUtis("通话连接失败");
+                    finish();
                 }
             });
         }

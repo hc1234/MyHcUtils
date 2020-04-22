@@ -203,12 +203,11 @@ public class BaseChatActivity extends HcUtisBaseActivty {
         }
     }
     public Boolean isOnline(String uid){
-//        if(mAliRtcEngine!=null) {
-//            return mAliRtcEngine.isUserOnline(uid);
-//        }else{
-//            return false;
-//        }
-        return true;
+        if(mAliRtcEngine!=null) {
+            return mAliRtcEngine.isUserOnline(uid);
+        }else{
+            return false;
+        }
     }
 
     /**
