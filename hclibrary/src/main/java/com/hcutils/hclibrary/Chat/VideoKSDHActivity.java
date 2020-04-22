@@ -288,7 +288,7 @@ public class VideoKSDHActivity extends BaseChatVideoActivity {
     public void setTypeUi(String typeUi) {
 
         if (typeUi.equals("come")) {
-            if(!isOnline(callInfor.getFrom())){
+            if(!isOnline(rtcInfor.getFrom())){
                 ToastUtis("对方已挂断");
                 finish();
                 return;
