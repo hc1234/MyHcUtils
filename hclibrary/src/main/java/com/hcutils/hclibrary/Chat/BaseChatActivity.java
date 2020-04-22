@@ -203,7 +203,13 @@ public class BaseChatActivity extends HcUtisBaseActivty {
         }
     }
     public Boolean isOnline(String uid){
+
         if(mAliRtcEngine!=null) {
+            String [] strings=mAliRtcEngine.getOnlineRemoteUsers();
+            Log.i("hcc","isOnline=="+uid+"  "+mAliRtcEngine.isUserOnline(uid)+"  数量=="+mAliRtcEngine.getOnlineRemoteUsers().length);
+            if(strings.length>0){
+                return true;
+            }
             return mAliRtcEngine.isUserOnline(uid);
         }else{
             return false;
