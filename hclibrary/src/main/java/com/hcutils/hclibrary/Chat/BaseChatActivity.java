@@ -513,7 +513,7 @@ public class BaseChatActivity extends HcUtisBaseActivty {
 
 
     public void setLoadimage(String uri, ImageView imageView) {
-        Glide.with(BaseChatActivity.this).load(uri).error(R.mipmap.head_portrait).into(imageView);
+        Glide.with(BaseChatActivity.this).load(uri).placeholder(R.mipmap.head_portrait).into(imageView);
     }
 
 

@@ -469,7 +469,7 @@ public class VideoActivity extends BaseChatVideoActivity {
          */
         @Override
         public void onPerformanceLow() {
-
+            Log.i("hcc","onPerformanceLow===当前设备性能不足");
         }
 
         /**
@@ -660,6 +660,11 @@ public class VideoActivity extends BaseChatVideoActivity {
 
         }
 
+        @Override
+        public void onFirstLocalVideoFrameDrawn() {
+            Log.i("hcc","onFirstLocalVideoFrameDrawn==本地预览");
+            super.onFirstLocalVideoFrameDrawn();
+        }
         /**
          * @param aliRtcStats
          * 实时数据回调(2s触发一次)
